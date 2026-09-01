@@ -1,30 +1,11 @@
-import { revalidateTag } from "next/cache";
-import { type NextRequest, NextResponse } from "next/server";
-import { parseBody } from "next-sanity/webhook";
+import { NextResponse } from 'next/server';
 
-export async function POST(req: NextRequest) {
-  try {
-    const { body, isValidSignature } = await parseBody<{
-      _type: string;
-      slug?: string | undefined;
-    }>(req, process.env.SANITY_HOOK_SECRET);
-    if (!isValidSignature) {
-      return new Response("Invalid Signature", { status: 401 });
-    }
-
-    if (!body?._type) {
-      return new Response("Bad Request", { status: 400 });
-    }
-
-    revalidateTag(body._type, { expire: 0 });
-    return NextResponse.json({
-      status: 200,
-      revalidated: true,
-      now: Date.now(),
-      body,
-    });
-  } catch (error: any) {
-    console.error(error);
-    return new Response(error.message, { status: 500 });
-  }
+export async function POST() {
+  return NextResponse.json(
+    {
+      message: 'Revalidation is disabled in this demo deployment.',
+      disabled: true,
+    },
+    { status: 200 },
+  );
 }

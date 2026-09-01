@@ -1,81 +1,39 @@
 import Breadcrumb from '@/components/Breadcrumb';
-import { getPost, imageBuilder } from '@/sanity/sanity-utils';
-import { PortableText } from '@portabletext/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { RelatedArticles } from './_components/related-articles';
 import { SharePost } from './_components/share-post';
+import type { Blog } from '@/types/blog';
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
+const demoPost: Blog = {
+  _id: 'blog-1',
+  title: 'Designing faster AI workflows',
+  slug: { current: 'designing-faster-ai-workflows' },
+  metadata: 'A practical guide to startup-ready AI automation ideas.',
+  mainImage: '/images/blog/blog-01.jpg',
+  author: { name: 'Mia Jordan', slug: { current: 'mia-jordan' } },
+  tags: ['AI', 'Productivity'],
+  publishedAt: '2026-08-01',
+  body: [],
+};
+
 export async function generateMetadata(props: Props) {
   const params = await props.params;
   const { slug } = params;
-  const post = await getPost(slug);
-  const siteURL = process.env.SITE_URL;
-  const siteName = process.env.SITE_NAME;
-  const authorName = process.env.AUTHOR_NAME;
 
-  if (post) {
-    return {
-      title: `${post.title || 'Single Post Page'} | ${siteName}`,
-      description: `${post.metadata?.slice(0, 136)}...`,
-      author: authorName,
-
-      robots: {
-        index: true,
-        follow: true,
-        nocache: true,
-        googleBot: {
-          index: true,
-          follow: false,
-          'max-video-preview': -1,
-          'max-image-preview': 'large',
-          'max-snippet': -1,
-        },
-      },
-
-      openGraph: {
-        title: `${post.title} | ${siteName}`,
-        description: post.metadata,
-        url: `${siteURL}/blog/${post?.slug?.current}`,
-        siteName: siteName,
-        images: [
-          {
-            url: imageBuilder(post.mainImage).url(),
-            width: 1800,
-            height: 1600,
-            alt: post.title,
-          },
-        ],
-        locale: 'en_US',
-        type: 'article',
-      },
-
-      twitter: {
-        card: 'summary_large_image',
-        title: `${post.title} | ${siteName}`,
-        description: `${post.metadata?.slice(0, 136)}...`,
-        creator: `@${authorName}`,
-        site: `@${siteName}`,
-        images: [imageBuilder(post?.mainImage).url()],
-        url: `${siteURL}/blog/${post?.slug?.current}`,
-      },
-    };
-  } else {
-    return {
-      title: 'Not Found',
-      description: 'No blog article has been found',
-    };
-  }
+  return {
+    title: `${slug} | Blog`,
+    description: demoPost.metadata,
+  };
 }
 
 export default async function BlogDetails(props: Props) {
   const params = await props.params;
   const { slug } = params;
-  const post = await getPost(slug);
 
   return (
     <>
@@ -84,8 +42,8 @@ export default async function BlogDetails(props: Props) {
       <section className='pt-20 pb-17.5 lg:pt-25 lg:pb-22.5 xl:pb-27.5'>
         <div className='relative mx-auto mb-10 aspect-97/44 w-full max-w-[1170px] overflow-hidden rounded-2xl px-4 sm:px-8 md:rounded-3xl xl:px-0'>
           <Image
-            src={imageBuilder(post?.mainImage).url()}
-            alt={post.title}
+            src={demoPost.mainImage || '/images/blog/blog-01.jpg'}
+            alt={demoPost.title}
             fill
           />
         </div>
@@ -94,7 +52,7 @@ export default async function BlogDetails(props: Props) {
           <div className='mx-auto max-w-[870px]'>
             <div className='mb-7.5 flex flex-wrap items-center justify-between gap-5'>
               <div className='flex flex-wrap items-center gap-2.5'>
-                {post?.tags?.map((tag) => (
+                {demoPost.tags?.map((tag) => (
                   <span
                     key={tag}
                     className='cursor-pointer rounded-full border border-white/10 bg-white/[0.07] px-2.5 py-[3px] text-xs font-medium duration-300 ease-out hover:border-white/25 hover:text-white'
@@ -125,10 +83,10 @@ export default async function BlogDetails(props: Props) {
                   </svg>
 
                   <Link
-                    href={`/blog/author/${post?.author?.slug?.current}`}
+                    href={`/blog/author/${typeof demoPost.author?.slug === 'string' ? demoPost.author.slug : (demoPost.author?.slug?.current ?? 'author')}`}
                     className='text-sm font-medium'
                   >
-                    {post?.author?.name}
+                    {demoPost.author?.name}
                   </Link>
                 </div>
 
@@ -148,7 +106,7 @@ export default async function BlogDetails(props: Props) {
                   </svg>
 
                   <span className='text-sm font-medium'>
-                    {new Date(post?.publishedAt!)
+                    {new Date(demoPost.publishedAt || '2026-08-01')
                       .toDateString()
                       .split(' ')
                       .slice(1)
@@ -159,14 +117,16 @@ export default async function BlogDetails(props: Props) {
             </div>
 
             <h1 className='mb-7.5 text-[34px] leading-[45px] font-semibold text-white'>
-              {post?.title}
+              {demoPost.title}
             </h1>
 
             <div className='blog-details mb-12'>
-              <PortableText value={post?.body || []} />
+              <p className='text-lg leading-8 text-white/80'>
+                This is a demo article for the static deployment build.
+              </p>
             </div>
 
-            <SharePost title={post?.title} description={post?.metadata} />
+            <SharePost title={demoPost.title} description={demoPost.metadata} />
           </div>
 
           <RelatedArticles />
