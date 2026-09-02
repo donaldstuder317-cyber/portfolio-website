@@ -18,7 +18,7 @@ const Header = () => {
   const pathname = usePathname();
 
   return (
-    <header className='sticky top-0 z-50 border-b border-white/10 bg-[#030b22]/80 backdrop-blur-xl'>
+    <header className='sticky top-0 z-50 border-b border-white/[0.06] bg-white/[0.015] shadow-none'>
       <div className='mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-8 xl:px-0'>
         <Link
           href='/'
@@ -66,7 +66,7 @@ const Header = () => {
       </div>
 
       {menuOpen && (
-        <div className='border-t border-white/10 bg-[#030b22] md:hidden'>
+        <div className='border-t border-white/[0.06] bg-white/[0.015] md:hidden'>
           <nav className='mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4'>
             {navItems.map((item) => (
               <Link

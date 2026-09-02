@@ -1,11 +1,8 @@
-import Image from 'next/image';
-import { Metadata } from 'next';
-import headshot from '@/assets/my-headshot.jpeg';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'CodeCraft | Portfolio',
-  description: 'Portfolio website for a web developer',
-};
+import Image from 'next/image';
+import { useEffect, useRef } from 'react';
+import headshot from '@/assets/my-headshot.jpeg';
 
 const stats = [
   { value: '4+', label: 'Years Experience', tone: 'purple' },
@@ -179,241 +176,343 @@ const projects = [
 ];
 
 export default function Home() {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    let animationFrame = 0;
+    let targetTime = 0;
+
+    const clamp = (value: number) => Math.min(Math.max(value, 0), 1);
+
+    const syncVideoToScroll = () => {
+      const maxScroll =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const rawProgress = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+      const linearProgress = clamp(rawProgress);
+
+      if (!Number.isFinite(video.duration) || video.duration <= 0) {
+        return;
+      }
+
+      const easedProgress =
+        linearProgress < 0.5
+          ? 2 * linearProgress * linearProgress
+          : 1 - Math.pow(-2 * linearProgress + 2, 2) / 2;
+      targetTime = easedProgress * (video.duration - 0.08);
+
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+
+      animationFrame = requestAnimationFrame(() => {
+        if (Math.abs(video.currentTime - targetTime) > 0.015) {
+          video.currentTime = targetTime;
+        }
+      });
+    };
+
+    const resetVideo = () => {
+      video.pause();
+      video.currentTime = 0;
+      syncVideoToScroll();
+    };
+
+    if (video.readyState >= 1) {
+      resetVideo();
+    } else {
+      video.addEventListener('loadedmetadata', resetVideo);
+    }
+
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          syncVideoToScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', syncVideoToScroll);
+    syncVideoToScroll();
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      video.removeEventListener('loadedmetadata', resetVideo);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', syncVideoToScroll);
+    };
+  }, []);
+
   return (
-    <main className='min-h-screen bg-[#030b22] text-[#dcdcdd]'>
-      <section className='relative overflow-hidden'>
-        <div className='absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(109,75,255,0.28),_transparent_38%),radial-gradient(circle_at_bottom_right,_rgba(33,146,192,0.18),_transparent_20%)]' />
+    <main className='relative min-h-screen bg-transparent text-[color:var(--alabaster-grey)]'>
+      <div className='pointer-events-none fixed inset-0 z-0 flex items-center justify-center overflow-hidden'>
+        <div
+          style={{
+            width: '75vw',
+            maxWidth: '980px',
+            aspectRatio: '16 / 9',
+            transform: 'translateX(1.5%)',
+          }}
+        >
+          <video
+            ref={videoRef}
+            src='/video/bg-video-scroll.mp4'
+            muted
+            playsInline
+            preload='auto'
+            aria-hidden='true'
+            className='h-full w-full object-cover opacity-100'
+            style={{
+              objectPosition: 'center center',
+              transform: 'scale(1.02)',
+            }}
+          />
+        </div>
+      </div>
 
-        <div className='relative mx-auto -mt-8 max-w-6xl px-4 pb-16 md:px-8 xl:px-0'>
-          <div className='grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]'>
-            <div className='max-w-xl'>
-              <p className='typewriter-text mb-5 text-xs font-semibold tracking-[0.22em] text-[#a78bfa] uppercase'>
-                FULL STACK WEB DEVELOPER
-              </p>
+      <div className='relative z-10'>
+        <section className='relative overflow-hidden'>
+          <div className='relative mx-auto -mt-8 max-w-6xl px-4 pb-16 md:px-8 xl:px-0'>
+            <div className='grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]'>
+              <div className='max-w-xl'>
+                <p className='typewriter-text mb-5 text-xs font-semibold tracking-[0.22em] text-[#a78bfa] uppercase'>
+                  FULL STACK WEB DEVELOPER
+                </p>
 
-              <h1 className='typewriter-text text-4xl leading-tight font-black text-white sm:text-5xl xl:text-[4.2rem]'>
-                Donald Studer
-              </h1>
+                <h1 className='typewriter-text text-4xl leading-tight font-black text-white sm:text-5xl xl:text-[4.2rem]'>
+                  Donald Studer
+                </h1>
 
-              <p className='typewriter-text mt-3 max-w-md text-base leading-7 text-[#c5c3c6]'>
-                US Army Veteran
-                <span className='mt-1 block'>Aspiring Network Architect</span>
-              </p>
+                <p className='typewriter-text mt-3 max-w-md text-base leading-7 text-[#c5c3c6]'>
+                  US Army Veteran
+                  <span className='mt-1 block'>Aspiring Network Architect</span>
+                </p>
 
-              <div className='mt-8 flex flex-wrap gap-4'>
-                <button className='rounded-lg border border-[#4c5c68] bg-[#1e293b] px-6 py-3 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:text-[#1985a1]'>
-                  View My Work <span className='ml-2'>→</span>
-                </button>
-                <button className='rounded-lg border border-[#1985a1]/60 bg-[#0f172a] px-6 py-3 text-sm font-semibold text-[#dcdcdd] transition hover:bg-[#1985a1] hover:text-white'>
-                  Download CV <span className='ml-2'>↓</span>
-                </button>
+                <div className='mt-8 flex flex-wrap gap-4'>
+                  <button className='rounded-lg border border-[#4c5c68] bg-[#1e293b] px-6 py-3 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:text-[#1985a1]'>
+                    View My Work <span className='ml-2'>→</span>
+                  </button>
+                  <button className='rounded-lg border border-[#1985a1]/60 bg-[#0f172a] px-6 py-3 text-sm font-semibold text-[#dcdcdd] transition hover:bg-[#1985a1] hover:text-white'>
+                    Download CV <span className='ml-2'>↓</span>
+                  </button>
+                </div>
+
+                <div className='mt-12'>
+                  <p className='mb-4 text-[0.68rem] font-semibold tracking-[0.18em] text-[#dcdcdd] uppercase'>
+                    Technologies I work with
+                  </p>
+                  <div className='flex flex-wrap gap-3'>
+                    {techIcons.map((tech) => (
+                      <div
+                        key={tech.name}
+                        className='flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/[0.02] shadow-none'
+                        title={tech.name}
+                      >
+                        {tech.icon}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
 
-              <div className='mt-12'>
-                <p className='mb-4 text-[0.68rem] font-semibold tracking-[0.18em] text-[#dcdcdd] uppercase'>
-                  Technologies I work with
-                </p>
-                <div className='flex flex-wrap gap-3'>
-                  {techIcons.map((tech) => (
-                    <div
-                      key={tech.name}
-                      className='flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-[#0d1328] shadow-[0_0_20px_rgba(25,133,161,0.12)]'
-                      title={tech.name}
-                    >
-                      {tech.icon}
-                    </div>
-                  ))}
+              <div className='relative flex min-h-[520px] items-center justify-center'>
+                <div className='absolute h-[320px] w-[320px] rounded-full bg-[radial-gradient(circle,_rgba(167,139,250,0.52)_0%,_rgba(94,61,221,0.25)_35%,_rgba(15,23,42,0)_70%)] blur-[26px]' />
+                <div className='absolute inset-0 flex items-center justify-center'>
+                  <div className='relative h-[280px] w-[280px] overflow-hidden rounded-full bg-[#0d1328] shadow-[0_0_34px_rgba(167,139,250,0.32),0_20px_40px_rgba(0,0,0,0.35)]'>
+                    <Image
+                      src={headshot}
+                      alt='Alex headshot'
+                      fill
+                      priority
+                      className='object-cover'
+                      style={{ objectPosition: '50% 18%' }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
+        </section>
 
-            <div className='relative flex min-h-[520px] items-center justify-center'>
-              <div className='absolute h-[320px] w-[320px] rounded-full bg-[radial-gradient(circle,_rgba(167,139,250,0.52)_0%,_rgba(94,61,221,0.25)_35%,_rgba(15,23,42,0)_70%)] blur-[26px]' />
-              <div className='absolute inset-0 flex items-center justify-center'>
-                <div className='relative h-[280px] w-[280px] overflow-hidden rounded-full bg-[#0d1328] shadow-[0_0_34px_rgba(167,139,250,0.32),0_20px_40px_rgba(0,0,0,0.35)]'>
-                  <Image
-                    src={headshot}
-                    alt='Alex headshot'
-                    fill
-                    priority
-                    className='object-cover'
-                    style={{ objectPosition: '50% 18%' }}
+        <section className='mx-auto max-w-6xl px-4 py-20 md:px-8 xl:px-0'>
+          <div className='grid gap-12 lg:grid-cols-[1.1fr_0.9fr]'>
+            <div>
+              <p className='mb-3 text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
+                About Me
+              </p>
+              <h2 className='text-3xl font-black text-white sm:text-4xl'>
+                I&apos;m passionate about creating digital solutions
+              </h2>
+              <p className='mt-5 max-w-lg text-base leading-7 text-[#c5c3c6]'>
+                With 4+ years of experience in web development, I help
+                businesses and individuals bring their ideas to life through
+                efficient, elegant, and user-friendly code.
+              </p>
+              <button className='mt-8 rounded-lg border border-[#1985a1]/60 bg-transparent px-5 py-3 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:bg-[#1985a1]/10'>
+                Learn More About Me <span className='ml-2'>→</span>
+              </button>
+            </div>
+
+            <div className='grid gap-5 sm:grid-cols-2'>
+              {stats.map((stat) => (
+                <div
+                  key={stat.label}
+                  className='rounded-2xl border border-white/10 bg-white/[0.02] p-5 shadow-none'
+                >
+                  <div
+                    className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl text-lg font-bold text-white ${
+                      stat.tone === 'purple'
+                        ? 'bg-gradient-to-br from-violet-500 to-indigo-500'
+                        : 'bg-gradient-to-br from-sky-500 to-cyan-500'
+                    }`}
+                  >
+                    {stat.value === '4+'
+                      ? '✦'
+                      : stat.value === '50+'
+                        ? '</>'
+                        : stat.value === '30+'
+                          ? '◌'
+                          : '⚑'}
+                  </div>
+                  <div className='text-3xl font-black text-white'>
+                    {stat.value}
+                  </div>
+                  <div className='mt-2 text-sm text-[#c5c3c6]'>
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className='mx-auto max-w-6xl px-4 pb-20 md:px-8 xl:px-0'>
+          <div className='mb-10 text-center'>
+            <p className='text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
+              My Skills
+            </p>
+            <h2 className='mt-3 text-3xl font-black text-white sm:text-4xl'>
+              Technologies I Master
+            </h2>
+          </div>
+
+          <div className='grid gap-6 md:grid-cols-2'>
+            {skills.map((skill) => (
+              <div
+                key={skill.name}
+                className='rounded-xl border border-white/10 bg-white/[0.02] p-4'
+              >
+                <div className='mb-3 flex items-center justify-between text-sm text-white'>
+                  <span>{skill.name}</span>
+                  <span className='text-[#c5c3c6]'>{skill.value}%</span>
+                </div>
+                <div className='h-2.5 w-full overflow-hidden rounded-full bg-[#1d2438]'>
+                  <div
+                    className='h-full rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400'
+                    style={{ width: `${skill.value}%` }}
                   />
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className='mx-auto max-w-6xl px-4 py-20 md:px-8 xl:px-0'>
-        <div className='grid gap-12 lg:grid-cols-[1.1fr_0.9fr]'>
-          <div>
-            <p className='mb-3 text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
-              About Me
-            </p>
-            <h2 className='text-3xl font-black text-white sm:text-4xl'>
-              I&apos;m passionate about creating digital solutions
-            </h2>
-            <p className='mt-5 max-w-lg text-base leading-7 text-[#c5c3c6]'>
-              With 4+ years of experience in web development, I help businesses
-              and individuals bring their ideas to life through efficient,
-              elegant, and user-friendly code.
-            </p>
-            <button className='mt-8 rounded-lg border border-[#1985a1]/60 bg-transparent px-5 py-3 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:bg-[#1985a1]/10'>
-              Learn More About Me <span className='ml-2'>→</span>
-            </button>
-          </div>
-
-          <div className='grid gap-5 sm:grid-cols-2'>
-            {stats.map((stat) => (
-              <div
-                key={stat.label}
-                className='rounded-2xl border border-white/10 bg-[#0d1328] p-5 shadow-[0_12px_30px_rgba(14,18,37,0.25)]'
-              >
-                <div
-                  className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl text-lg font-bold text-white ${
-                    stat.tone === 'purple'
-                      ? 'bg-gradient-to-br from-violet-500 to-indigo-500'
-                      : 'bg-gradient-to-br from-sky-500 to-cyan-500'
-                  }`}
-                >
-                  {stat.value === '4+'
-                    ? '✦'
-                    : stat.value === '50+'
-                      ? '</>'
-                      : stat.value === '30+'
-                        ? '◌'
-                        : '⚑'}
-                </div>
-                <div className='text-3xl font-black text-white'>
-                  {stat.value}
-                </div>
-                <div className='mt-2 text-sm text-[#c5c3c6]'>{stat.label}</div>
-              </div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className='mx-auto max-w-6xl px-4 pb-20 md:px-8 xl:px-0'>
-        <div className='mb-10 text-center'>
-          <p className='text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
-            My Skills
-          </p>
-          <h2 className='mt-3 text-3xl font-black text-white sm:text-4xl'>
-            Technologies I Master
-          </h2>
-        </div>
+        <section className='mx-auto max-w-6xl px-4 pb-20 md:px-8 xl:px-0'>
+          <div className='mb-10 text-center'>
+            <p className='text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
+              Featured Projects
+            </p>
+            <h2 className='mt-3 text-3xl font-black text-white sm:text-4xl'>
+              Some of My Recent Work
+            </h2>
+          </div>
 
-        <div className='grid gap-6 md:grid-cols-2'>
-          {skills.map((skill) => (
-            <div
-              key={skill.name}
-              className='rounded-xl border border-white/10 bg-[#0d1328] p-4'
-            >
-              <div className='mb-3 flex items-center justify-between text-sm text-white'>
-                <span>{skill.name}</span>
-                <span className='text-[#c5c3c6]'>{skill.value}%</span>
-              </div>
-              <div className='h-2.5 w-full overflow-hidden rounded-full bg-[#1d2438]'>
-                <div
-                  className='h-full rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400'
-                  style={{ width: `${skill.value}%` }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className='mx-auto max-w-6xl px-4 pb-20 md:px-8 xl:px-0'>
-        <div className='mb-10 text-center'>
-          <p className='text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
-            Featured Projects
-          </p>
-          <h2 className='mt-3 text-3xl font-black text-white sm:text-4xl'>
-            Some of My Recent Work
-          </h2>
-        </div>
-
-        <div className='grid gap-6 lg:grid-cols-3'>
-          {projects.map((project, index) => (
-            <article
-              key={project.id}
-              className='overflow-hidden rounded-2xl border border-white/10 bg-[#0d1328] p-3 shadow-[0_18px_35px_rgba(0,0,0,0.2)]'
-            >
-              <div className='mb-4 rounded-xl border border-white/10 bg-[#111827] p-2'>
-                <div
-                  className={`relative h-52 overflow-hidden rounded-lg bg-gradient-to-br ${project.accent}`}
-                >
-                  <div className='absolute top-4 left-4 text-[10px] font-semibold tracking-[0.25em] text-[#dcdcdd] uppercase'>
-                    {project.id}
-                  </div>
-                  <div className='absolute inset-x-5 top-12 bottom-5 rounded-[18px] border border-white/10 bg-white/5 p-3 backdrop-blur-sm'>
-                    <div className='mb-3 h-3 w-20 rounded bg-white/10' />
-                    <div className='space-y-2'>
-                      <div className='h-2.5 w-full rounded bg-white/10' />
-                      <div className='h-2.5 w-4/5 rounded bg-white/10' />
-                      <div className='grid grid-cols-3 gap-2 pt-2'>
-                        <div className='h-16 rounded bg-white/10' />
-                        <div className='h-16 rounded bg-white/10' />
-                        <div className='h-16 rounded bg-white/10' />
+          <div className='grid gap-6 lg:grid-cols-3'>
+            {projects.map((project) => (
+              <article
+                key={project.id}
+                className='overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-3 shadow-none'
+              >
+                <div className='mb-4 rounded-xl border border-white/10 bg-white/[0.02] p-2'>
+                  <div
+                    className={`relative h-52 overflow-hidden rounded-lg bg-gradient-to-br ${project.accent}`}
+                  >
+                    <div className='absolute top-4 left-4 text-[10px] font-semibold tracking-[0.25em] text-[#dcdcdd] uppercase'>
+                      {project.id}
+                    </div>
+                    <div className='absolute inset-x-5 top-12 bottom-5 rounded-[18px] border border-white/10 bg-white/[0.02] p-3'>
+                      <div className='mb-3 h-3 w-20 rounded bg-white/10' />
+                      <div className='space-y-2'>
+                        <div className='h-2.5 w-full rounded bg-white/10' />
+                        <div className='h-2.5 w-4/5 rounded bg-white/10' />
+                        <div className='grid grid-cols-3 gap-2 pt-2'>
+                          <div className='h-16 rounded bg-white/10' />
+                          <div className='h-16 rounded bg-white/10' />
+                          <div className='h-16 rounded bg-white/10' />
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className='px-2 pb-2'>
-                <h3 className='text-xl font-bold text-white'>{project.name}</h3>
-                <p className='mt-2 text-sm leading-6 text-[#c5c3c6]'>
-                  {project.description}
+                <div className='px-2 pb-2'>
+                  <h3 className='text-xl font-bold text-white'>
+                    {project.name}
+                  </h3>
+                  <p className='mt-2 text-sm leading-6 text-[#c5c3c6]'>
+                    {project.description}
+                  </p>
+                  <button className='mt-5 inline-flex items-center gap-2 rounded-lg border border-[#1985a1]/60 bg-[#10192c] px-4 py-2 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:bg-[#1985a1]/10'>
+                    View Project <span>→</span>
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className='mx-auto max-w-6xl px-4 pb-20 md:px-8 xl:px-0'>
+          <div className='grid gap-8 rounded-[28px] border border-white/10 bg-white/[0.02] p-6 md:p-10 lg:grid-cols-[1fr_1.2fr]'>
+            <div className='flex items-center'>
+              <div>
+                <p className='text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
+                  Let&apos;s work together
                 </p>
-                <button className='mt-5 inline-flex items-center gap-2 rounded-lg border border-[#1985a1]/60 bg-[#10192c] px-4 py-2 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:bg-[#1985a1]/10'>
-                  View Project <span>→</span>
+                <h2 className='mt-3 text-3xl font-black text-white sm:text-4xl'>
+                  Have a project in mind?
+                </h2>
+                <button className='mt-8 rounded-lg bg-[#1985a1] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#147e93]'>
+                  Get In Touch <span className='ml-2'>→</span>
                 </button>
               </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className='mx-auto max-w-6xl px-4 pb-20 md:px-8 xl:px-0'>
-        <div className='grid gap-8 rounded-[28px] border border-white/10 bg-[#0d1328] p-6 md:p-10 lg:grid-cols-[1fr_1.2fr]'>
-          <div className='flex items-center'>
-            <div>
-              <p className='text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
-                Let&apos;s work together
-              </p>
-              <h2 className='mt-3 text-3xl font-black text-white sm:text-4xl'>
-                Have a project in mind?
-              </h2>
-              <button className='mt-8 rounded-lg bg-[#1985a1] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#147e93]'>
-                Get In Touch <span className='ml-2'>→</span>
-              </button>
             </div>
-          </div>
 
-          <div className='rounded-[24px] border border-white/10 bg-[#0f172a] p-6'>
-            <div className='mb-5 flex items-start gap-4'>
-              <div className='flex h-10 w-10 items-center justify-center rounded-full bg-[#1985a1]/20 text-xl text-[#1985a1]'>
-                “
+            <div className='rounded-[24px] border border-white/10 bg-white/[0.02] p-6'>
+              <div className='mb-5 flex items-start gap-4'>
+                <div className='flex h-10 w-10 items-center justify-center rounded-full bg-[#1985a1]/20 text-xl text-[#1985a1]'>
+                  “
+                </div>
+                <p className='text-lg leading-8 text-[#dcdcdd]'>
+                  Alex is an exceptional developer who delivers high-quality
+                  work on time. His attention to detail and problem-solving
+                  skills are outstanding.
+                </p>
               </div>
-              <p className='text-lg leading-8 text-[#dcdcdd]'>
-                Alex is an exceptional developer who delivers high-quality work
-                on time. His attention to detail and problem-solving skills are
-                outstanding.
-              </p>
-            </div>
 
-            <div className='mt-6 border-t border-white/10 pt-5'>
-              <div className='font-semibold text-white'>Sarah Johnson</div>
-              <div className='text-sm text-[#c5c3c6]'>CEO, TechStart</div>
+              <div className='mt-6 border-t border-white/10 pt-5'>
+                <div className='font-semibold text-white'>Sarah Johnson</div>
+                <div className='text-sm text-[#c5c3c6]'>CEO, TechStart</div>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
   );
 }

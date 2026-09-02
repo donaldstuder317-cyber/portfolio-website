@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 const Footer = () => {
   return (
-    <footer className='border-t border-white/10 bg-[#030b22] text-[#dcdcdd]'>
+    <footer className='border-t border-white/[0.06] bg-white/[0.015] text-[#dcdcdd]'>
       <div className='mx-auto max-w-6xl px-4 py-12 md:px-8 xl:px-0'>
         <div className='grid gap-8 md:grid-cols-[1.2fr_0.8fr]'>
           <div>
@@ -26,7 +26,7 @@ const Footer = () => {
                 {['in', '◌', '◎'].map((item) => (
                   <span
                     key={item}
-                    className='flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-[#0d1328] text-sm text-white'
+                    className='flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.02] text-sm text-white'
                   >
                     {item}
                   </span>
@@ -48,7 +48,7 @@ const Footer = () => {
         </div>
 
         <div className='mt-10 border-t border-white/10 pt-5 text-sm text-[#c5c3c6]'>
-          © 2024 Donald Studer. All rights reserved.
+          © 2026 Donald Studer. All rights reserved.
         </div>
       </div>
     </footer>
