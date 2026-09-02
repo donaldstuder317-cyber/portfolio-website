@@ -555,6 +555,27 @@
   );
 }
 
+@utility portrait-glow {
+  width: 430px;
+  height: 430px;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgba(25, 133, 161, 0.9) 0%,
+    rgba(25, 133, 161, 0.5) 38%,
+    rgba(76, 92, 104, 0.24) 58%,
+    rgba(15, 23, 42, 0) 76%
+  );
+  filter: blur(36px);
+}
+
+@utility portrait-frame {
+  border: 2px solid rgba(25, 133, 161, 0.72);
+  box-shadow:
+    0 0 82px rgba(25, 133, 161, 0.82),
+    0 20px 40px rgba(0, 0, 0, 0.35);
+}
+
 @utility team-img-gradient {
   &:before {
     @apply gradient-border bg-white/20;

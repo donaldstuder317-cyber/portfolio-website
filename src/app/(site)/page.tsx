@@ -175,7 +175,7 @@ const projects = [
   },
 ];
 
-const backgroundFrameCount = 90;
+const backgroundFrameCount = 53;
 const backgroundFrames = Array.from(
   { length: backgroundFrameCount },
   (_, index) => `/video/frames/frame_${String(index + 1).padStart(4, '0')}.jpg`,
@@ -337,9 +337,9 @@ export default function Home() {
               </div>
 
               <div className='relative flex min-h-[520px] items-center justify-center'>
-                <div className='absolute h-[320px] w-[320px] rounded-full bg-[radial-gradient(circle,_rgba(167,139,250,0.52)_0%,_rgba(94,61,221,0.25)_35%,_rgba(15,23,42,0)_70%)] blur-[26px]' />
-                <div className='absolute inset-0 flex items-center justify-center'>
-                  <div className='relative h-[280px] w-[280px] overflow-hidden rounded-full bg-[#0d1328] shadow-[0_0_34px_rgba(167,139,250,0.32),0_20px_40px_rgba(0,0,0,0.35)]'>
+                <div className='portrait-glow pointer-events-none absolute' />
+                <div className='relative z-[1] flex items-center justify-center'>
+                  <div className='portrait-frame relative h-[280px] w-[280px] overflow-hidden rounded-full bg-[#0d1328]'>
                     <Image
                       src={headshot}
                       alt='Alex headshot'
