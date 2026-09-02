@@ -175,105 +175,126 @@ const projects = [
   },
 ];
 
+const backgroundFrameCount = 90;
+const backgroundFrames = Array.from(
+  { length: backgroundFrameCount },
+  (_, index) => `/video/frames/frame_${String(index + 1).padStart(4, '0')}.jpg`,
+);
+const backgroundFrameSmoothing = 0.08;
+
 export default function Home() {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.imageSmoothingEnabled = true;
+
+    const frames = backgroundFrames.map((src) => {
+      const image = new window.Image();
+      image.src = src;
+      image.decoding = 'async';
+      return image;
+    });
 
     let animationFrame = 0;
-    let targetTime = 0;
+    let targetIndex = 0;
+    let currentIndex = 0;
 
-    const clamp = (value: number) => Math.min(Math.max(value, 0), 1);
-
-    const syncVideoToScroll = () => {
-      const maxScroll =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const rawProgress = maxScroll > 0 ? window.scrollY / maxScroll : 0;
-      const linearProgress = clamp(rawProgress);
-
-      if (!Number.isFinite(video.duration) || video.duration <= 0) {
+    const renderFrame = (index: number) => {
+      const frame = frames[index];
+      if (!frame || !frame.complete || !frame.naturalWidth) {
         return;
       }
 
-      const easedProgress =
-        linearProgress < 0.5
-          ? 2 * linearProgress * linearProgress
-          : 1 - Math.pow(-2 * linearProgress + 2, 2) / 2;
-      targetTime = easedProgress * (video.duration - 0.08);
+      const width =
+        canvas.width || window.innerWidth * (window.devicePixelRatio || 1);
+      const height =
+        canvas.height || window.innerHeight * (window.devicePixelRatio || 1);
+      const frameRatio = frame.naturalWidth / frame.naturalHeight;
+      const viewportRatio = width / height;
 
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
+      let drawWidth = width;
+      let drawHeight = height;
+      let offsetX = 0;
+      let offsetY = 0;
+
+      if (viewportRatio > frameRatio) {
+        drawHeight = height;
+        drawWidth = height * frameRatio;
+        offsetX = (width - drawWidth) / 2;
+      } else {
+        drawWidth = width;
+        drawHeight = width / frameRatio;
+        offsetY = (height - drawHeight) / 2;
       }
 
-      animationFrame = requestAnimationFrame(() => {
-        if (Math.abs(video.currentTime - targetTime) > 0.015) {
-          video.currentTime = targetTime;
-        }
-      });
+      ctx.clearRect(0, 0, width, height);
+      ctx.drawImage(frame, offsetX, offsetY, drawWidth, drawHeight);
     };
 
-    const resetVideo = () => {
-      video.pause();
-      video.currentTime = 0;
-      syncVideoToScroll();
+    const syncToScroll = () => {
+      const maxScroll =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const scrollProgress = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+      const clampedProgress = Math.min(Math.max(scrollProgress, 0), 1);
+      targetIndex = Math.min(
+        backgroundFrameCount - 1,
+        Math.floor(clampedProgress * backgroundFrameCount),
+      );
     };
 
-    if (video.readyState >= 1) {
-      resetVideo();
-    } else {
-      video.addEventListener('loadedmetadata', resetVideo);
-    }
+    const render = () => {
+      currentIndex += (targetIndex - currentIndex) * backgroundFrameSmoothing;
+      const roundedIndex = Math.min(
+        backgroundFrameCount - 1,
+        Math.max(0, Math.round(currentIndex)),
+      );
 
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          syncVideoToScroll();
-          ticking = false;
-        });
-        ticking = true;
-      }
+      renderFrame(roundedIndex);
+      animationFrame = window.requestAnimationFrame(render);
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', syncVideoToScroll);
-    syncVideoToScroll();
+    const handleResize = () => {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      renderFrame(Math.round(currentIndex));
+    };
+
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.floor(window.innerWidth * dpr);
+    canvas.height = Math.floor(window.innerHeight * dpr);
+    window.addEventListener('scroll', syncToScroll, { passive: true });
+    window.addEventListener('resize', handleResize);
+    renderFrame(0);
+    syncToScroll();
+    animationFrame = window.requestAnimationFrame(render);
 
     return () => {
-      cancelAnimationFrame(animationFrame);
-      video.removeEventListener('loadedmetadata', resetVideo);
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', syncVideoToScroll);
+      window.cancelAnimationFrame(animationFrame);
+      window.removeEventListener('scroll', syncToScroll);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
   return (
     <main className='relative min-h-screen bg-transparent text-[color:var(--alabaster-grey)]'>
       <div className='pointer-events-none fixed inset-0 z-0 flex items-center justify-center overflow-hidden'>
-        <div
+        <canvas
+          ref={canvasRef}
+          aria-hidden='true'
+          className='h-full w-full opacity-100'
           style={{
-            width: '75vw',
-            maxWidth: '980px',
-            aspectRatio: '16 / 9',
-            transform: 'translateX(1.5%)',
+            objectPosition: 'center center',
+            transform: 'none',
+            filter: 'brightness(0.92)',
           }}
-        >
-          <video
-            ref={videoRef}
-            src='/video/bg-video-scroll.mp4'
-            muted
-            playsInline
-            preload='auto'
-            aria-hidden='true'
-            className='h-full w-full object-cover opacity-100'
-            style={{
-              objectPosition: 'center center',
-              transform: 'scale(1.02)',
-            }}
-          />
-        </div>
+        />
       </div>
 
       <div className='relative z-10'>
