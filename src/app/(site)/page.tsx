@@ -211,10 +211,8 @@ export default function Home() {
         return;
       }
 
-      const width =
-        canvas.width || window.innerWidth * (window.devicePixelRatio || 1);
-      const height =
-        canvas.height || window.innerHeight * (window.devicePixelRatio || 1);
+      const width = canvas.width;
+      const height = canvas.height;
       const frameRatio = frame.naturalWidth / frame.naturalHeight;
       const viewportRatio = width / height;
 
@@ -224,13 +222,13 @@ export default function Home() {
       let offsetY = 0;
 
       if (viewportRatio > frameRatio) {
-        drawHeight = height;
-        drawWidth = height * frameRatio;
-        offsetX = (width - drawWidth) / 2;
-      } else {
         drawWidth = width;
         drawHeight = width / frameRatio;
         offsetY = (height - drawHeight) / 2;
+      } else {
+        drawHeight = height;
+        drawWidth = height * frameRatio;
+        offsetX = (width - drawWidth) / 2;
       }
 
       ctx.clearRect(0, 0, width, height);
@@ -259,26 +257,27 @@ export default function Home() {
       animationFrame = window.requestAnimationFrame(render);
     };
 
-    const handleResize = () => {
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = Math.floor(window.innerWidth * dpr);
-      canvas.height = Math.floor(window.innerHeight * dpr);
+    const resizeCanvas = () => {
+      const { width, height } = canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.max(1, Math.floor(width * dpr));
+      canvas.height = Math.max(1, Math.floor(height * dpr));
       renderFrame(Math.round(currentIndex));
     };
 
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = Math.floor(window.innerWidth * dpr);
-    canvas.height = Math.floor(window.innerHeight * dpr);
+    const resizeObserver = new ResizeObserver(resizeCanvas);
+    resizeObserver.observe(canvas);
     window.addEventListener('scroll', syncToScroll, { passive: true });
-    window.addEventListener('resize', handleResize);
-    renderFrame(0);
+    window.visualViewport?.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
     syncToScroll();
     animationFrame = window.requestAnimationFrame(render);
 
     return () => {
       window.cancelAnimationFrame(animationFrame);
+      resizeObserver.disconnect();
       window.removeEventListener('scroll', syncToScroll);
-      window.removeEventListener('resize', handleResize);
+      window.visualViewport?.removeEventListener('resize', resizeCanvas);
     };
   }, []);
 
@@ -288,12 +287,7 @@ export default function Home() {
         <canvas
           ref={canvasRef}
           aria-hidden='true'
-          className='h-full w-full opacity-100'
-          style={{
-            objectPosition: 'center center',
-            transform: 'none',
-            filter: 'brightness(0.92)',
-          }}
+          className='block h-full w-full brightness-[0.92]'
         />
       </div>
 
@@ -520,7 +514,7 @@ export default function Home() {
                   “
                 </div>
                 <p className='text-lg leading-8 text-[#dcdcdd]'>
-                  Alex is an exceptional developer who delivers high-quality
+                  Donald is an exceptional developer who delivers high-quality
                   work on time. His attention to detail and problem-solving
                   skills are outstanding.
                 </p>
