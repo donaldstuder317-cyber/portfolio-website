@@ -3,17 +3,12 @@
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 import headshot from '@/assets/my-headshot.jpeg';
-
-const skills = [
-  { name: 'HTML', value: 95 },
-  { name: 'CSS', value: 90 },
-  { name: 'JavaScript', value: 95 },
-  { name: 'React', value: 85 },
-  { name: 'Next.js', value: 80 },
-  { name: 'TypeScript', value: 85 },
-  { name: 'Tailwind CSS', value: 90 },
-  { name: 'Git', value: 85 },
-];
+import { FlipText } from '@/components/ui/flip-text';
+import {
+  CheckmarkCircle,
+  RocketIcon,
+  ThumbsUpIcon,
+} from '@/components/ui/card-icons';
 
 const techIcons = [
   {
@@ -193,6 +188,7 @@ export default function Home() {
     let isRendering = false;
     let targetIndex = 0;
     let currentIndex = 0;
+    let renderedIndex = -1;
 
     const loadFrame = (index: number) => {
       const frame = frames[index];
@@ -211,9 +207,14 @@ export default function Home() {
       }
     };
 
-    const renderFrame = (index: number) => {
+    const renderFrame = (index: number, force = false) => {
       const frame = frames[index];
-      if (!frame || !frame.complete || !frame.naturalWidth) {
+      if (
+        !frame ||
+        !frame.complete ||
+        !frame.naturalWidth ||
+        (!force && index === renderedIndex)
+      ) {
         return;
       }
 
@@ -239,6 +240,7 @@ export default function Home() {
 
       ctx.clearRect(0, 0, width, height);
       ctx.drawImage(frame, offsetX, offsetY, drawWidth, drawHeight);
+      renderedIndex = index;
     };
 
     const syncToScroll = () => {
@@ -246,11 +248,14 @@ export default function Home() {
         document.documentElement.scrollHeight - window.innerHeight;
       const scrollProgress = maxScroll > 0 ? window.scrollY / maxScroll : 0;
       const clampedProgress = Math.min(Math.max(scrollProgress, 0), 1);
-      targetIndex = Math.min(
+      const nextTargetIndex = Math.min(
         backgroundFrameCount - 1,
         Math.floor(clampedProgress * backgroundFrameCount),
       );
+      const targetChanged = nextTargetIndex !== targetIndex;
+      targetIndex = nextTargetIndex;
       preloadNearbyFrames(targetIndex);
+      return targetChanged;
     };
 
     function render() {
@@ -272,7 +277,7 @@ export default function Home() {
     }
 
     const requestRender = () => {
-      if (isRendering) return;
+      if (document.hidden || isRendering) return;
       isRendering = true;
       animationFrame = window.requestAnimationFrame(render);
     };
@@ -282,7 +287,7 @@ export default function Home() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.max(1, Math.floor(width * dpr));
       canvas.height = Math.max(1, Math.floor(height * dpr));
-      renderFrame(Math.round(currentIndex));
+      renderFrame(Math.round(currentIndex), true);
       requestRender();
     };
 
@@ -290,11 +295,21 @@ export default function Home() {
     const resizeObserver = new ResizeObserver(resizeCanvas);
     resizeObserver.observe(canvas);
     const handleScroll = () => {
-      syncToScroll();
+      if (syncToScroll()) requestRender();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        window.cancelAnimationFrame(animationFrame);
+        isRendering = false;
+        return;
+      }
+
       requestRender();
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     window.visualViewport?.addEventListener('resize', resizeCanvas);
     preloadNearbyFrames(0);
     resizeCanvas();
@@ -308,6 +323,7 @@ export default function Home() {
       );
       resizeObserver.disconnect();
       window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.visualViewport?.removeEventListener('resize', resizeCanvas);
     };
   }, []);
@@ -332,26 +348,30 @@ export default function Home() {
           <div className='relative mx-auto -mt-8 max-w-6xl px-4 pb-16 md:px-8 xl:px-0'>
             <div className='grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]'>
               <div className='max-w-xl'>
-                <p className='typewriter-text mb-5 text-xs font-semibold tracking-[0.22em] text-[#a78bfa] uppercase'>
+                <FlipText className='mb-5 text-xs font-semibold tracking-[0.22em] text-[#a78bfa] uppercase'>
                   FULL STACK WEB DEVELOPER
-                </p>
+                </FlipText>
 
-                <h1 className='typewriter-text text-4xl leading-tight font-black text-white sm:text-5xl xl:text-[4.2rem]'>
+                <FlipText className='text-4xl leading-tight font-black text-white sm:text-5xl xl:text-[4.2rem]'>
                   Donald Studer
-                </h1>
+                </FlipText>
 
-                <p className='typewriter-text mt-3 max-w-md text-base leading-7 text-[#c5c3c6]'>
+                <FlipText className='mt-3 max-w-md text-base leading-7 text-[#c5c3c6]'>
                   Open to full-stack opportunities, freelance web development,
                   and team collaborations.
-                </p>
+                </FlipText>
 
                 <div className='mt-8 flex flex-wrap gap-4'>
                   <button className='rounded-lg border border-[#4c5c68] bg-[#1e293b] px-6 py-3 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:text-[#1985a1]'>
                     Get In Touch <span className='ml-2'>→</span>
                   </button>
-                  <button className='rounded-lg border border-[#1985a1]/60 bg-[#0f172a] px-6 py-3 text-sm font-semibold text-[#dcdcdd] transition hover:bg-[#1985a1] hover:text-white'>
-                    Download CV <span className='ml-2'>↓</span>
-                  </button>
+                  <a
+                    href='/Donald-Studer-Resume.pdf'
+                    download='Donald-Studer-Resume.pdf'
+                    className='rounded-lg border border-[#1985a1]/60 bg-[#0f172a] px-6 py-3 text-sm font-semibold text-[#dcdcdd] transition hover:bg-[#1985a1] hover:text-white'
+                  >
+                    Download Resume <span className='ml-2'>↓</span>
+                  </a>
                 </div>
 
                 <div className='mt-12'>
@@ -391,15 +411,18 @@ export default function Home() {
           </div>
         </section>
 
-        <section className='mx-auto max-w-6xl px-4 py-20 md:px-8 xl:px-0'>
+        <section
+          id='about'
+          className='mx-auto max-w-6xl scroll-mt-24 px-4 py-20 md:px-8 xl:px-0'
+        >
           <div className='grid gap-12 lg:grid-cols-[1.1fr_0.9fr]'>
             <div>
               <p className='mb-3 text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
                 About Me
               </p>
-              <h2 className='typewriter-text typewriter-wrap text-3xl font-black text-white sm:text-4xl'>
+              <FlipText className='text-3xl font-black text-white sm:text-4xl'>
                 Battle-tested discipline meets clean, modern code
-              </h2>
+              </FlipText>
               <p className='mt-5 max-w-lg text-base leading-7 text-[#c5c3c6]'>
                 Writing clean, reliable code requires more than knowing syntax;
                 it demands consistency, structure, and accountability. Having
@@ -415,9 +438,9 @@ export default function Home() {
 
             <div className='flex items-center'>
               <div className='max-w-xl'>
-                <p className='typewriter-text typewriter-wrap text-xl font-bold text-white'>
+                <FlipText className='text-xl font-bold text-white'>
                   U.S. Army Veteran &amp; Full-Stack Developer
-                </p>
+                </FlipText>
                 <p className='mt-5 text-base leading-7 text-[#c5c3c6]'>
                   Bridging military discipline, logistics problem-solving, and
                   modern software engineering. Currently pursuing an A.S. in
@@ -430,56 +453,82 @@ export default function Home() {
           </div>
         </section>
 
-        <section className='mx-auto max-w-6xl px-4 pb-20 md:px-8 xl:px-0'>
+        <section
+          id='skills'
+          className='mx-auto max-w-6xl scroll-mt-24 px-4 pb-20 md:px-8 xl:px-0'
+        >
           <div className='mb-10 text-center'>
-            <p className='typewriter-text text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
-              My Skills
-            </p>
-            <h2 className='typewriter-text mt-3 text-3xl font-black text-white sm:text-4xl'>
-              Technologies I Master
-            </h2>
+            <FlipText className='mt-3 text-3xl font-black text-white sm:text-4xl'>
+              Built for Execution
+            </FlipText>
           </div>
 
-          <div className='grid gap-6 md:grid-cols-2'>
-            {skills.map((skill) => (
-              <div
-                key={skill.name}
-                className='rounded-xl border border-[#4c5c68] bg-[#1b252b]/85 p-4'
-              >
-                <div className='mb-3 flex items-center justify-between text-sm text-white'>
-                  <span>{skill.name}</span>
-                  <span className='text-[#c5c3c6]'>{skill.value}%</span>
-                </div>
-                <div className='h-2.5 w-full overflow-hidden rounded-full bg-[#1d2438]'>
-                  <div
-                    className='h-full rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400'
-                    style={{ width: `${skill.value}%` }}
-                  />
-                </div>
+          <div className='grid gap-6 md:grid-cols-3'>
+            <article className='group rounded-2xl border border-b-8 border-[#4c5c68] bg-[#1b252b]/85 p-4 shadow-none transition duration-300 ease-out hover:-translate-y-2 hover:border-[#1985a1] hover:shadow-[0_18px_40px_rgba(0,0,0,0.28)] motion-reduce:transition-none motion-reduce:hover:translate-y-0'>
+              <div className='mb-5 flex h-9 w-9 items-center justify-center rounded-full bg-[#2d3545] text-[#dcdcdd]'>
+                <CheckmarkCircle size={36} />
               </div>
-            ))}
+              <p className='text-4xl font-black text-white'>100%</p>
+              <h3 className='mt-1 text-sm font-bold text-white'>
+                Clean Code Guarantee
+              </h3>
+              <p className='mt-2 text-xs leading-5 text-[#7f8994]'>
+                Every function commented, all dependencies documented.
+              </p>
+            </article>
+
+            <article className='group rounded-2xl border border-b-8 border-[#4c5c68] bg-[#1b252b]/85 p-4 shadow-none transition duration-300 ease-out hover:-translate-y-2 hover:border-[#1985a1] hover:shadow-[0_18px_40px_rgba(0,0,0,0.28)] motion-reduce:transition-none motion-reduce:hover:translate-y-0'>
+              <div className='mb-5 flex h-9 w-9 items-center justify-center rounded-full bg-[#2d3545] text-[#dcdcdd]'>
+                <RocketIcon size={36} />
+              </div>
+              <p className='text-4xl font-black text-white'>30</p>
+              <h3 className='mt-1 text-sm font-bold text-white'>
+                Days to Deploy
+              </h3>
+              <p className='mt-2 text-xs leading-5 text-[#7f8994]'>
+                Guaranteed delivery of a working, defined prototype within one
+                month.
+              </p>
+            </article>
+
+            <article className='group rounded-2xl border border-b-8 border-[#4c5c68] bg-[#1b252b]/85 p-4 shadow-none transition duration-300 ease-out hover:-translate-y-2 hover:border-[#1985a1] hover:shadow-[0_18px_40px_rgba(0,0,0,0.28)] motion-reduce:transition-none motion-reduce:hover:translate-y-0'>
+              <div className='mb-5 flex h-9 w-9 items-center justify-center rounded-full bg-[#2d3545] text-[#dcdcdd]'>
+                <ThumbsUpIcon size={36} />
+              </div>
+              <p className='text-4xl font-black text-white'>10x</p>
+              <h3 className='mt-1 text-sm font-bold text-white'>
+                SEO Best Practice
+              </h3>
+              <p className='mt-2 text-xs leading-5 text-[#7f8994]'>
+                Implementation of 10-core SEO principles right from the first
+                commit.
+              </p>
+            </article>
           </div>
         </section>
 
-        <section className='mx-auto max-w-6xl px-4 pb-20 md:px-8 xl:px-0'>
+        <section
+          id='projects'
+          className='mx-auto max-w-6xl scroll-mt-24 px-4 pb-20 md:px-8 xl:px-0'
+        >
           <div className='mb-10 text-center'>
             <p className='text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
               Featured Projects
             </p>
-            <h2 className='typewriter-text mt-3 text-3xl font-black text-white sm:text-4xl'>
+            <FlipText className='mt-3 text-3xl font-black text-white sm:text-4xl'>
               Some of My Recent Work
-            </h2>
+            </FlipText>
           </div>
 
           <div className='grid gap-6 lg:grid-cols-3'>
             {projects.map((project) => (
               <article
                 key={project.id}
-                className='overflow-hidden rounded-2xl border border-[#4c5c68] bg-[#1b252b]/85 p-3 shadow-none'
+                className='group overflow-hidden rounded-2xl border border-[#4c5c68] bg-[#1b252b]/85 p-3 shadow-none transition duration-300 ease-out hover:-translate-y-2 hover:border-[#1985a1] hover:shadow-[0_18px_40px_rgba(0,0,0,0.28)] motion-reduce:transition-none motion-reduce:hover:translate-y-0'
               >
                 <div className='mb-4 rounded-xl border border-[#4c5c68] bg-[#24343c]/85 p-2'>
                   <div
-                    className={`relative h-52 overflow-hidden rounded-lg bg-gradient-to-br ${project.accent}`}
+                    className={`relative h-52 overflow-hidden rounded-lg bg-gradient-to-br ${project.accent} transition-transform duration-500 ease-out group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100`}
                   >
                     <div className='absolute top-4 left-4 text-[10px] font-semibold tracking-[0.25em] text-[#dcdcdd] uppercase'>
                       {project.id}

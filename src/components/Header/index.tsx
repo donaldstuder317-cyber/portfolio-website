@@ -7,11 +7,10 @@ import { DSIcon } from '@/assets/icons';
 
 const navItems = [
   { title: 'Home', href: '/' },
-  { title: 'About', href: '#about' },
-  { title: 'Skills', href: '#skills' },
-  { title: 'Projects', href: '#projects' },
-  { title: 'Blog', href: '#blog' },
-  { title: 'Contact', href: '#contact' },
+  { title: 'About', href: '/#about' },
+  { title: 'Skills', href: '/#skills' },
+  { title: 'Projects', href: '/#projects' },
+  { title: 'Contact', href: '/#contact' },
 ];
 
 const Header = () => {
@@ -50,7 +49,7 @@ const Header = () => {
 
         <div className='hidden md:block'>
           <Link
-            href='#contact'
+            href='/#contact'
             className='rounded-lg bg-[#1985a1] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#147e93]'
           >
             Hire Me <span className='ml-1'>→</span>

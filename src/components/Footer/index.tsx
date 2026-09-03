@@ -1,9 +1,11 @@
-import Link from 'next/link';
-import { DSIcon } from '@/assets/icons';
+import { CredlyIcon, DSIcon, GithubIcon, LinkedinIcon } from '@/assets/icons';
 
 const Footer = () => {
   return (
-    <footer className='border-t border-[#4c5c68]/70 bg-[#1b252b]/90 text-[#dcdcdd] backdrop-blur-sm'>
+    <footer
+      id='contact'
+      className='scroll-mt-24 border-t border-[#4c5c68]/70 bg-[#1b252b]/90 text-[#dcdcdd] backdrop-blur-sm'
+    >
       <div className='mx-auto max-w-6xl px-4 py-12 md:px-8 xl:px-0'>
         <div className='grid gap-8 md:grid-cols-[1.2fr_0.8fr]'>
           <div>
@@ -24,14 +26,33 @@ const Footer = () => {
                 Follow Me
               </p>
               <div className='flex gap-3'>
-                {['in', '◌', '◎'].map((item) => (
-                  <span
-                    key={item}
-                    className='flex h-9 w-9 items-center justify-center rounded-full border border-[#4c5c68] bg-[#24343c]/85 text-sm text-white'
-                  >
-                    {item}
-                  </span>
-                ))}
+                <a
+                  href='https://www.linkedin.com/'
+                  target='_blank'
+                  rel='noreferrer'
+                  aria-label='LinkedIn'
+                  className='flex h-9 w-9 items-center justify-center rounded-full border border-[#4c5c68] bg-[#24343c]/85 text-white transition hover:border-[#1985a1] hover:text-[#1985a1]'
+                >
+                  <LinkedinIcon className='h-4 w-4' aria-hidden='true' />
+                </a>
+                <a
+                  href='https://github.com/donaldstuder317-cyber'
+                  target='_blank'
+                  rel='noreferrer'
+                  aria-label='GitHub'
+                  className='flex h-9 w-9 items-center justify-center rounded-full border border-[#4c5c68] bg-[#24343c]/85 text-white transition hover:border-[#1985a1] hover:text-[#1985a1]'
+                >
+                  <GithubIcon className='h-4 w-4' aria-hidden='true' />
+                </a>
+                <a
+                  href='https://www.credly.com/users/donald-studer.3541886c'
+                  target='_blank'
+                  rel='noreferrer'
+                  aria-label='Credly'
+                  className='flex h-9 w-9 items-center justify-center rounded-full border border-[#4c5c68] bg-[#24343c]/85 text-white transition hover:border-[#1985a1] hover:text-[#1985a1]'
+                >
+                  <CredlyIcon className='h-4 w-4' aria-hidden='true' />
+                </a>
               </div>
             </div>
 
