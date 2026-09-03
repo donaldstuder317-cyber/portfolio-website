@@ -4,13 +4,6 @@ import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 import headshot from '@/assets/my-headshot.jpeg';
 
-const stats = [
-  { value: '4+', label: 'Years Experience', tone: 'purple' },
-  { value: '50+', label: 'Projects Completed', tone: 'blue' },
-  { value: '30+', label: 'Happy Clients', tone: 'purple' },
-  { value: '100%', label: 'Client Satisfaction', tone: 'blue' },
-];
-
 const skills = [
   { name: 'HTML', value: 95 },
   { name: 'CSS', value: 90 },
@@ -194,16 +187,29 @@ export default function Home() {
 
     ctx.imageSmoothingEnabled = true;
 
-    const frames = backgroundFrames.map((src) => {
-      const image = new window.Image();
-      image.src = src;
-      image.decoding = 'async';
-      return image;
-    });
+    const frames = backgroundFrames.map(() => new window.Image());
 
     let animationFrame = 0;
+    let isRendering = false;
     let targetIndex = 0;
     let currentIndex = 0;
+
+    const loadFrame = (index: number) => {
+      const frame = frames[index];
+      if (!frame || frame.src) return;
+
+      frame.decoding = 'async';
+      frame.src = backgroundFrames[index];
+    };
+
+    const preloadNearbyFrames = (index: number) => {
+      for (let offset = -2; offset <= 2; offset += 1) {
+        const nearbyIndex = index + offset;
+        if (nearbyIndex >= 0 && nearbyIndex < backgroundFrameCount) {
+          loadFrame(nearbyIndex);
+        }
+      }
+    };
 
     const renderFrame = (index: number) => {
       const frame = frames[index];
@@ -244,9 +250,10 @@ export default function Home() {
         backgroundFrameCount - 1,
         Math.floor(clampedProgress * backgroundFrameCount),
       );
+      preloadNearbyFrames(targetIndex);
     };
 
-    const render = () => {
+    function render() {
       currentIndex += (targetIndex - currentIndex) * backgroundFrameSmoothing;
       const roundedIndex = Math.min(
         backgroundFrameCount - 1,
@@ -254,6 +261,19 @@ export default function Home() {
       );
 
       renderFrame(roundedIndex);
+
+      if (Math.abs(targetIndex - currentIndex) > 0.01) {
+        animationFrame = window.requestAnimationFrame(render);
+      } else {
+        currentIndex = targetIndex;
+        renderFrame(Math.round(currentIndex));
+        isRendering = false;
+      }
+    }
+
+    const requestRender = () => {
+      if (isRendering) return;
+      isRendering = true;
       animationFrame = window.requestAnimationFrame(render);
     };
 
@@ -263,20 +283,31 @@ export default function Home() {
       canvas.width = Math.max(1, Math.floor(width * dpr));
       canvas.height = Math.max(1, Math.floor(height * dpr));
       renderFrame(Math.round(currentIndex));
+      requestRender();
     };
 
+    frames.forEach((image) => image.addEventListener('load', requestRender));
     const resizeObserver = new ResizeObserver(resizeCanvas);
     resizeObserver.observe(canvas);
-    window.addEventListener('scroll', syncToScroll, { passive: true });
+    const handleScroll = () => {
+      syncToScroll();
+      requestRender();
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     window.visualViewport?.addEventListener('resize', resizeCanvas);
+    preloadNearbyFrames(0);
     resizeCanvas();
     syncToScroll();
-    animationFrame = window.requestAnimationFrame(render);
+    requestRender();
 
     return () => {
       window.cancelAnimationFrame(animationFrame);
+      frames.forEach((image) =>
+        image.removeEventListener('load', requestRender),
+      );
       resizeObserver.disconnect();
-      window.removeEventListener('scroll', syncToScroll);
+      window.removeEventListener('scroll', handleScroll);
       window.visualViewport?.removeEventListener('resize', resizeCanvas);
     };
   }, []);
@@ -291,7 +322,12 @@ export default function Home() {
         />
       </div>
 
-      <div className='relative z-10'>
+      <div
+        aria-hidden='true'
+        className='pointer-events-none fixed inset-0 z-[1] bg-[#030014]/30'
+      />
+
+      <div className='site-content relative z-10'>
         <section className='relative overflow-hidden'>
           <div className='relative mx-auto -mt-8 max-w-6xl px-4 pb-16 md:px-8 xl:px-0'>
             <div className='grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]'>
@@ -305,13 +341,13 @@ export default function Home() {
                 </h1>
 
                 <p className='typewriter-text mt-3 max-w-md text-base leading-7 text-[#c5c3c6]'>
-                  US Army Veteran
-                  <span className='mt-1 block'>Aspiring Network Architect</span>
+                  Open to full-stack opportunities, freelance web development,
+                  and team collaborations.
                 </p>
 
                 <div className='mt-8 flex flex-wrap gap-4'>
                   <button className='rounded-lg border border-[#4c5c68] bg-[#1e293b] px-6 py-3 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:text-[#1985a1]'>
-                    View My Work <span className='ml-2'>→</span>
+                    Get In Touch <span className='ml-2'>→</span>
                   </button>
                   <button className='rounded-lg border border-[#1985a1]/60 bg-[#0f172a] px-6 py-3 text-sm font-semibold text-[#dcdcdd] transition hover:bg-[#1985a1] hover:text-white'>
                     Download CV <span className='ml-2'>↓</span>
@@ -320,13 +356,13 @@ export default function Home() {
 
                 <div className='mt-12'>
                   <p className='mb-4 text-[0.68rem] font-semibold tracking-[0.18em] text-[#dcdcdd] uppercase'>
-                    Technologies I work with
+                    Technologies | Mastered
                   </p>
                   <div className='flex flex-wrap gap-3'>
                     {techIcons.map((tech) => (
                       <div
                         key={tech.name}
-                        className='flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/[0.02] shadow-none'
+                        className='flex h-11 w-11 items-center justify-center rounded-lg border border-[#4c5c68] bg-[#24343c]/85 shadow-none'
                         title={tech.name}
                       >
                         {tech.icon}
@@ -361,58 +397,45 @@ export default function Home() {
               <p className='mb-3 text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
                 About Me
               </p>
-              <h2 className='text-3xl font-black text-white sm:text-4xl'>
-                I&apos;m passionate about creating digital solutions
+              <h2 className='typewriter-text typewriter-wrap text-3xl font-black text-white sm:text-4xl'>
+                Battle-tested discipline meets clean, modern code
               </h2>
               <p className='mt-5 max-w-lg text-base leading-7 text-[#c5c3c6]'>
-                With 4+ years of experience in web development, I help
-                businesses and individuals bring their ideas to life through
-                efficient, elegant, and user-friendly code.
+                Writing clean, reliable code requires more than knowing syntax;
+                it demands consistency, structure, and accountability. Having
+                operated under demanding conditions where precision and timing
+                were critical to mission success, every project is approached
+                with thorough planning, strict adherence to standards, and
+                rigorous testing before deployment.
               </p>
               <button className='mt-8 rounded-lg border border-[#1985a1]/60 bg-transparent px-5 py-3 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:bg-[#1985a1]/10'>
                 Learn More About Me <span className='ml-2'>→</span>
               </button>
             </div>
 
-            <div className='grid gap-5 sm:grid-cols-2'>
-              {stats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className='rounded-2xl border border-white/10 bg-white/[0.02] p-5 shadow-none'
-                >
-                  <div
-                    className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl text-lg font-bold text-white ${
-                      stat.tone === 'purple'
-                        ? 'bg-gradient-to-br from-violet-500 to-indigo-500'
-                        : 'bg-gradient-to-br from-sky-500 to-cyan-500'
-                    }`}
-                  >
-                    {stat.value === '4+'
-                      ? '✦'
-                      : stat.value === '50+'
-                        ? '</>'
-                        : stat.value === '30+'
-                          ? '◌'
-                          : '⚑'}
-                  </div>
-                  <div className='text-3xl font-black text-white'>
-                    {stat.value}
-                  </div>
-                  <div className='mt-2 text-sm text-[#c5c3c6]'>
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
+            <div className='flex items-center'>
+              <div className='max-w-xl'>
+                <p className='typewriter-text typewriter-wrap text-xl font-bold text-white'>
+                  U.S. Army Veteran &amp; Full-Stack Developer
+                </p>
+                <p className='mt-5 text-base leading-7 text-[#c5c3c6]'>
+                  Bridging military discipline, logistics problem-solving, and
+                  modern software engineering. Currently pursuing an A.S. in
+                  Computer Science while building responsive, accessible web
+                  applications. Focused on clean architecture, reliable
+                  delivery, and high-impact code.
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
         <section className='mx-auto max-w-6xl px-4 pb-20 md:px-8 xl:px-0'>
           <div className='mb-10 text-center'>
-            <p className='text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
+            <p className='typewriter-text text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
               My Skills
             </p>
-            <h2 className='mt-3 text-3xl font-black text-white sm:text-4xl'>
+            <h2 className='typewriter-text mt-3 text-3xl font-black text-white sm:text-4xl'>
               Technologies I Master
             </h2>
           </div>
@@ -421,7 +444,7 @@ export default function Home() {
             {skills.map((skill) => (
               <div
                 key={skill.name}
-                className='rounded-xl border border-white/10 bg-white/[0.02] p-4'
+                className='rounded-xl border border-[#4c5c68] bg-[#1b252b]/85 p-4'
               >
                 <div className='mb-3 flex items-center justify-between text-sm text-white'>
                   <span>{skill.name}</span>
@@ -443,7 +466,7 @@ export default function Home() {
             <p className='text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
               Featured Projects
             </p>
-            <h2 className='mt-3 text-3xl font-black text-white sm:text-4xl'>
+            <h2 className='typewriter-text mt-3 text-3xl font-black text-white sm:text-4xl'>
               Some of My Recent Work
             </h2>
           </div>
@@ -452,16 +475,16 @@ export default function Home() {
             {projects.map((project) => (
               <article
                 key={project.id}
-                className='overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-3 shadow-none'
+                className='overflow-hidden rounded-2xl border border-[#4c5c68] bg-[#1b252b]/85 p-3 shadow-none'
               >
-                <div className='mb-4 rounded-xl border border-white/10 bg-white/[0.02] p-2'>
+                <div className='mb-4 rounded-xl border border-[#4c5c68] bg-[#24343c]/85 p-2'>
                   <div
                     className={`relative h-52 overflow-hidden rounded-lg bg-gradient-to-br ${project.accent}`}
                   >
                     <div className='absolute top-4 left-4 text-[10px] font-semibold tracking-[0.25em] text-[#dcdcdd] uppercase'>
                       {project.id}
                     </div>
-                    <div className='absolute inset-x-5 top-12 bottom-5 rounded-[18px] border border-white/10 bg-white/[0.02] p-3'>
+                    <div className='absolute inset-x-5 top-12 bottom-5 rounded-[18px] border border-[#4c5c68] bg-[#1b252b]/90 p-3'>
                       <div className='mb-3 h-3 w-20 rounded bg-white/10' />
                       <div className='space-y-2'>
                         <div className='h-2.5 w-full rounded bg-white/10' />
@@ -493,7 +516,7 @@ export default function Home() {
         </section>
 
         <section className='mx-auto max-w-6xl px-4 pb-20 md:px-8 xl:px-0'>
-          <div className='grid gap-8 rounded-[28px] border border-white/10 bg-white/[0.02] p-6 md:p-10 lg:grid-cols-[1fr_1.2fr]'>
+          <div className='grid gap-8 rounded-[28px] border border-[#4c5c68] bg-[#1b252b]/85 p-6 md:p-10 lg:grid-cols-[1fr_1.2fr]'>
             <div className='flex items-center'>
               <div>
                 <p className='text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
@@ -508,7 +531,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className='rounded-[24px] border border-white/10 bg-white/[0.02] p-6'>
+            <div className='rounded-[24px] border border-[#4c5c68] bg-[#24343c]/85 p-6'>
               <div className='mb-5 flex items-start gap-4'>
                 <div className='flex h-10 w-10 items-center justify-center rounded-full bg-[#1985a1]/20 text-xl text-[#1985a1]'>
                   “

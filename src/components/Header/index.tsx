@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { DSIcon } from '@/assets/icons';
 
 const navItems = [
   { title: 'Home', href: '/' },
@@ -18,15 +19,15 @@ const Header = () => {
   const pathname = usePathname();
 
   return (
-    <header className='sticky top-0 z-50 border-b border-white/[0.06] bg-white/[0.015] shadow-none'>
+    <header className='sticky top-0 z-50 border-b border-[#4c5c68]/70 bg-[#1b252b]/90 shadow-none backdrop-blur-sm'>
       <div className='mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-8 xl:px-0'>
         <Link
           href='/'
           className='flex items-center gap-3 text-lg font-bold text-white'
           aria-label='Home'
         >
-          <span className='flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-violet-500 to-cyan-500 text-sm text-white'>
-            {'</>'}
+          <span className='flex h-8 w-8 items-center justify-center overflow-hidden rounded-md bg-[#1b252b] text-sm text-white'>
+            <DSIcon aria-hidden='true' className='h-[120%] w-[120%]' />
           </span>
         </Link>
 
@@ -66,7 +67,7 @@ const Header = () => {
       </div>
 
       {menuOpen && (
-        <div className='border-t border-white/[0.06] bg-white/[0.015] md:hidden'>
+        <div className='border-t border-[#4c5c68]/70 bg-[#1b252b]/95 md:hidden'>
           <nav className='mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4'>
             {navItems.map((item) => (
               <Link

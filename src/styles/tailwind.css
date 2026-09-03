@@ -220,12 +220,29 @@
   animation: typing 1.8s steps(34, end) forwards;
 }
 
+.typewriter-wrap {
+  width: 100%;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  animation: typing-wrap 1.8s steps(34, end) forwards;
+}
+
 @keyframes typing {
   from {
     width: 0;
   }
   to {
     width: 100%;
+  }
+}
+
+@keyframes typing-wrap {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
   }
 }
 
@@ -740,4 +757,10 @@ textarea {
 
 .generated-content-container p {
   @apply mt-2;
+}
+
+.site-content > section:first-child :is(h1, p, button),
+.site-content > section:nth-child(2) :is(h2, p, button),
+.site-content > section:last-child :is(h2, p, button) {
+  text-shadow: 0 1px 3px rgba(3, 0, 20, 0.85);
 }

@@ -1,14 +1,15 @@
 import Link from 'next/link';
+import { DSIcon } from '@/assets/icons';
 
 const Footer = () => {
   return (
-    <footer className='border-t border-white/[0.06] bg-white/[0.015] text-[#dcdcdd]'>
+    <footer className='border-t border-[#4c5c68]/70 bg-[#1b252b]/90 text-[#dcdcdd] backdrop-blur-sm'>
       <div className='mx-auto max-w-6xl px-4 py-12 md:px-8 xl:px-0'>
         <div className='grid gap-8 md:grid-cols-[1.2fr_0.8fr]'>
           <div>
             <div className='flex items-center gap-3 text-xl font-bold text-white'>
-              <span className='flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-cyan-500 text-sm'>
-                {'</>'}
+              <span className='flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg bg-[#1b252b] text-sm'>
+                <DSIcon aria-hidden='true' className='h-[120%] w-[120%]' />
               </span>
             </div>
             <p className='mt-5 max-w-md text-[#c5c3c6]'>
@@ -26,7 +27,7 @@ const Footer = () => {
                 {['in', '◌', '◎'].map((item) => (
                   <span
                     key={item}
-                    className='flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.02] text-sm text-white'
+                    className='flex h-9 w-9 items-center justify-center rounded-full border border-[#4c5c68] bg-[#24343c]/85 text-sm text-white'
                   >
                     {item}
                   </span>
