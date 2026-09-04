@@ -145,20 +145,26 @@ const techIcons = [
 const projects = [
   {
     id: '01',
-    name: 'E-Commerce Platform',
-    description: 'Full-stack e-commerce solution with modern UI/UX',
+    name: 'Online Coffee Shop',
+    description: 'Interactive UI with Responsive Shopping Cart',
+    image: '/coffee-shop.png',
+    url: 'https://the-bean-place-8-10-2026.vercel.app/',
     accent: 'from-pink-500/30 via-violet-500/10 to-transparent',
   },
   {
     id: '02',
-    name: 'Task Management App',
+    name: 'COMING SOON',
     description: 'Collaborative task management application',
+    image: null,
+    url: null,
     accent: 'from-sky-500/30 via-cyan-500/10 to-transparent',
   },
   {
     id: '03',
-    name: 'Crypto Dashboard',
+    name: 'COMING SOON',
     description: 'Real-time cryptocurrency tracking dashboard',
+    image: null,
+    url: null,
     accent: 'from-emerald-500/30 via-cyan-500/10 to-transparent',
   },
 ];
@@ -343,7 +349,7 @@ export default function Home() {
         className='pointer-events-none fixed inset-0 z-[1] bg-[#030014]/30'
       />
 
-      <div className='site-content relative z-10'>
+      <div className='site-content text-readable relative z-10'>
         <section className='relative overflow-hidden'>
           <div className='relative mx-auto -mt-8 max-w-6xl px-4 pb-16 md:px-8 xl:px-0'>
             <div className='grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]'>
@@ -356,15 +362,20 @@ export default function Home() {
                   Donald Studer
                 </FlipText>
 
-                <FlipText className='mt-3 max-w-md text-base leading-7 text-[#c5c3c6]'>
-                  Open to full-stack opportunities, freelance web development,
-                  and team collaborations.
-                </FlipText>
+                <div className='mt-3 max-w-md rounded-xl border border-[#dcdcdd]/25 bg-[#dcdcdd]/[0.12] p-4 backdrop-blur-[2px]'>
+                  <p className='text-base leading-7 text-[#c5c3c6]'>
+                    Open to full-stack opportunities, freelance web development,
+                    and team collaborations.
+                  </p>
+                </div>
 
                 <div className='mt-8 flex flex-wrap gap-4'>
-                  <button className='rounded-lg border border-[#4c5c68] bg-[#1e293b] px-6 py-3 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:text-[#1985a1]'>
+                  <a
+                    href='#contact'
+                    className='rounded-lg border border-[#4c5c68] bg-[#1e293b] px-6 py-3 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:text-[#1985a1]'
+                  >
                     Get In Touch <span className='ml-2'>→</span>
-                  </button>
+                  </a>
                   <a
                     href='/Donald-Studer-Resume.pdf'
                     download='Donald-Studer-Resume.pdf'
@@ -423,14 +434,16 @@ export default function Home() {
               <FlipText className='text-3xl font-black text-white sm:text-4xl'>
                 Battle-tested discipline meets clean, modern code
               </FlipText>
-              <p className='mt-5 max-w-lg text-base leading-7 text-[#c5c3c6]'>
-                Writing clean, reliable code requires more than knowing syntax;
-                it demands consistency, structure, and accountability. Having
-                operated under demanding conditions where precision and timing
-                were critical to mission success, every project is approached
-                with thorough planning, strict adherence to standards, and
-                rigorous testing before deployment.
-              </p>
+              <div className='mt-5 max-w-lg rounded-xl border border-[#dcdcdd]/25 bg-[#dcdcdd]/[0.12] p-4 backdrop-blur-[2px]'>
+                <p className='text-base leading-7 text-[#c5c3c6]'>
+                  Writing clean, reliable code requires more than knowing
+                  syntax; it demands consistency, structure, and accountability.
+                  Having operated under demanding conditions where precision and
+                  timing were critical to mission success, every project is
+                  approached with thorough planning, strict adherence to
+                  standards, and rigorous testing before deployment.
+                </p>
+              </div>
               <button className='mt-8 rounded-lg border border-[#1985a1]/60 bg-transparent px-5 py-3 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:bg-[#1985a1]/10'>
                 Learn More About Me <span className='ml-2'>→</span>
               </button>
@@ -441,13 +454,15 @@ export default function Home() {
                 <FlipText className='text-xl font-bold text-white'>
                   U.S. Army Veteran &amp; Full-Stack Developer
                 </FlipText>
-                <p className='mt-5 text-base leading-7 text-[#c5c3c6]'>
-                  Bridging military discipline, logistics problem-solving, and
-                  modern software engineering. Currently pursuing an A.S. in
-                  Computer Science while building responsive, accessible web
-                  applications. Focused on clean architecture, reliable
-                  delivery, and high-impact code.
-                </p>
+                <div className='mt-5 rounded-xl border border-[#dcdcdd]/25 bg-[#dcdcdd]/[0.12] p-4 backdrop-blur-[2px]'>
+                  <p className='text-base leading-7 text-[#c5c3c6]'>
+                    Bridging military discipline, logistics problem-solving, and
+                    modern software engineering. Currently pursuing an A.S. in
+                    Computer Science while building responsive, accessible web
+                    applications. Focused on clean architecture, reliable
+                    delivery, and high-impact code.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -533,18 +548,28 @@ export default function Home() {
                     <div className='absolute top-4 left-4 text-[10px] font-semibold tracking-[0.25em] text-[#dcdcdd] uppercase'>
                       {project.id}
                     </div>
-                    <div className='absolute inset-x-5 top-12 bottom-5 rounded-[18px] border border-[#4c5c68] bg-[#1b252b]/90 p-3'>
-                      <div className='mb-3 h-3 w-20 rounded bg-white/10' />
-                      <div className='space-y-2'>
-                        <div className='h-2.5 w-full rounded bg-white/10' />
-                        <div className='h-2.5 w-4/5 rounded bg-white/10' />
-                        <div className='grid grid-cols-3 gap-2 pt-2'>
-                          <div className='h-16 rounded bg-white/10' />
-                          <div className='h-16 rounded bg-white/10' />
-                          <div className='h-16 rounded bg-white/10' />
+                    {project.image ? (
+                      <Image
+                        src={project.image}
+                        alt={`${project.name} preview`}
+                        fill
+                        sizes='(min-width: 1024px) 31vw, 90vw'
+                        className='object-cover'
+                      />
+                    ) : (
+                      <div className='absolute inset-x-5 top-12 bottom-5 rounded-[18px] border border-[#4c5c68] bg-[#1b252b]/90 p-3'>
+                        <div className='mb-3 h-3 w-20 rounded bg-white/10' />
+                        <div className='space-y-2'>
+                          <div className='h-2.5 w-full rounded bg-white/10' />
+                          <div className='h-2.5 w-4/5 rounded bg-white/10' />
+                          <div className='grid grid-cols-3 gap-2 pt-2'>
+                            <div className='h-16 rounded bg-white/10' />
+                            <div className='h-16 rounded bg-white/10' />
+                            <div className='h-16 rounded bg-white/10' />
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
 
@@ -555,9 +580,20 @@ export default function Home() {
                   <p className='mt-2 text-sm leading-6 text-[#c5c3c6]'>
                     {project.description}
                   </p>
-                  <button className='mt-5 inline-flex items-center gap-2 rounded-lg border border-[#1985a1]/60 bg-[#10192c] px-4 py-2 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:bg-[#1985a1]/10'>
-                    View Project <span>→</span>
-                  </button>
+                  {project.url ? (
+                    <a
+                      href={project.url}
+                      target='_blank'
+                      rel='noreferrer'
+                      className='mt-5 inline-flex items-center gap-2 rounded-lg border border-[#1985a1]/60 bg-[#10192c] px-4 py-2 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:bg-[#1985a1]/10'
+                    >
+                      View Project <span>→</span>
+                    </a>
+                  ) : (
+                    <button className='mt-5 inline-flex items-center gap-2 rounded-lg border border-[#1985a1]/60 bg-[#10192c] px-4 py-2 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:bg-[#1985a1]/10'>
+                      View Project <span>→</span>
+                    </button>
+                  )}
                 </div>
               </article>
             ))}
@@ -574,9 +610,12 @@ export default function Home() {
                 <h2 className='mt-3 text-3xl font-black text-white sm:text-4xl'>
                   Have a project in mind?
                 </h2>
-                <button className='mt-8 rounded-lg bg-[#1985a1] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#147e93]'>
+                <a
+                  href='#contact'
+                  className='mt-8 inline-flex rounded-lg bg-[#1985a1] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#147e93]'
+                >
                   Get In Touch <span className='ml-2'>→</span>
-                </button>
+                </a>
               </div>
             </div>
 
