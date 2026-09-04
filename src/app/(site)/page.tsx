@@ -593,8 +593,10 @@ export default function Home() {
               </div>
 
               <div className='mt-6 border-t border-white/10 pt-5'>
-                <div className='font-semibold text-white'>Sarah Johnson</div>
-                <div className='text-sm text-[#c5c3c6]'>CEO, TechStart</div>
+                <div className='font-semibold text-white'>Future Client</div>
+                <div className='text-sm text-[#c5c3c6]'>
+                  <br /> Tech Industries
+                </div>
               </div>
             </div>
           </div>
