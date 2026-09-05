@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import headshot from '@/assets/my-headshot.jpeg';
 import { FlipText } from '@/components/ui/flip-text';
 import {
@@ -178,6 +178,34 @@ const backgroundFrameSmoothing = 0.08;
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [contactStatus, setContactStatus] = useState<
+    'idle' | 'sending' | 'success' | 'error'
+  >('idle');
+
+  const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setContactStatus('sending');
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(formData.entries())),
+      });
+
+      if (!response.ok) {
+        throw new Error('Contact form submission failed.');
+      }
+
+      form.reset();
+      setContactStatus('success');
+    } catch {
+      setContactStatus('error');
+    }
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -610,33 +638,68 @@ export default function Home() {
                 <h2 className='mt-3 text-3xl font-black text-white sm:text-4xl'>
                   Have a project in mind?
                 </h2>
-                <a
-                  href='#contact'
-                  className='mt-8 inline-flex rounded-lg bg-[#1985a1] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#147e93]'
-                >
-                  Get In Touch <span className='ml-2'>→</span>
-                </a>
               </div>
             </div>
 
             <div className='rounded-[24px] border border-[#4c5c68] bg-[#24343c]/85 p-6'>
-              <div className='mb-5 flex items-start gap-4'>
-                <div className='flex h-10 w-10 items-center justify-center rounded-full bg-[#1985a1]/20 text-xl text-[#1985a1]'>
-                  “
+              <form className='space-y-4' onSubmit={handleContactSubmit}>
+                <div className='grid gap-4 sm:grid-cols-2'>
+                  <label className='space-y-2 text-sm font-medium text-[#dcdcdd]'>
+                    Name
+                    <input
+                      type='text'
+                      name='name'
+                      required
+                      placeholder='Your name'
+                      className='w-full rounded-lg border border-[#4c5c68] bg-[#1b252b] px-4 py-3 text-sm text-white transition outline-none placeholder:text-[#c5c3c6]/60 focus:border-[#1985a1]'
+                    />
+                  </label>
+                  <label className='space-y-2 text-sm font-medium text-[#dcdcdd]'>
+                    Email
+                    <input
+                      type='email'
+                      name='email'
+                      required
+                      placeholder='you@example.com'
+                      className='w-full rounded-lg border border-[#4c5c68] bg-[#1b252b] px-4 py-3 text-sm text-white transition outline-none placeholder:text-[#c5c3c6]/60 focus:border-[#1985a1]'
+                    />
+                  </label>
                 </div>
-                <p className='text-lg leading-8 text-[#dcdcdd]'>
-                  Donald is an exceptional developer who delivers high-quality
-                  work on time. His attention to detail and problem-solving
-                  skills are outstanding.
-                </p>
-              </div>
 
-              <div className='mt-6 border-t border-white/10 pt-5'>
-                <div className='font-semibold text-white'>Future Client</div>
-                <div className='text-sm text-[#c5c3c6]'>
-                  <br /> Tech Industries
-                </div>
-              </div>
+                <label className='block space-y-2 text-sm font-medium text-[#dcdcdd]'>
+                  Tell me about your project
+                  <textarea
+                    name='message'
+                    required
+                    rows={4}
+                    placeholder='What are you looking to build?'
+                    className='w-full resize-none rounded-lg border border-[#4c5c68] bg-[#1b252b] px-4 py-3 text-sm leading-6 text-white transition outline-none placeholder:text-[#c5c3c6]/60 focus:border-[#1985a1]'
+                  />
+                </label>
+
+                <button
+                  type='submit'
+                  disabled={contactStatus === 'sending'}
+                  className='inline-flex rounded-lg border border-[#1985a1]/60 bg-[#1985a1]/10 px-5 py-3 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:bg-[#1985a1]/20'
+                >
+                  {contactStatus === 'sending' ? 'Sending...' : 'Send Message'}
+                  <span className='ml-2'>→</span>
+                </button>
+                <p
+                  aria-live='polite'
+                  className={`text-sm ${
+                    contactStatus === 'error'
+                      ? 'text-red-300'
+                      : 'text-[#c5c3c6]'
+                  }`}
+                >
+                  {contactStatus === 'success'
+                    ? 'Thanks, your message has been sent.'
+                    : contactStatus === 'error'
+                      ? 'Something went wrong. Please try again.'
+                      : ''}
+                </p>
+              </form>
             </div>
           </div>
         </section>
