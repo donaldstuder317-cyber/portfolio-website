@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import ScrollToTop from '@/components/ScrollToTop';
 import { Plus_Jakarta_Sans } from 'next/font/google';
+import type { Metadata } from 'next';
 import NextTopLoader from 'nextjs-toploader';
 import AuthProvider from '../context/AuthContext';
 import ToasterContext from '../context/ToastContext';
@@ -15,6 +16,12 @@ const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   display: 'swap',
 });
+
+export const metadata: Metadata = {
+  icons: {
+    icon: '/favicon.png?v=2',
+  },
+};
 
 export default function RootLayout({
   children,
