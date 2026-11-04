@@ -1,6 +1,7 @@
 import type { SVGProps } from 'react';
 
-interface CheckmarkCircleProps extends SVGProps<SVGSVGElement> {
+export interface CardIconProps extends SVGProps<SVGSVGElement> {
+  /** Sets both width and height. */
   size?: number | string;
 }
 
@@ -8,7 +9,7 @@ export function CheckmarkCircle({
   size = 24,
   className,
   ...props
-}: CheckmarkCircleProps) {
+}: CardIconProps) {
   return (
     <svg
       width={size}
@@ -32,11 +33,7 @@ export function CheckmarkCircle({
   );
 }
 
-export function RocketIcon({
-  size = 24,
-  className,
-  ...props
-}: SVGProps<SVGSVGElement> & { size?: number | string }) {
+export function RocketIcon({ size = 24, className, ...props }: CardIconProps) {
   return (
     <svg
       width={size}
@@ -76,15 +73,11 @@ export function RocketIcon({
   );
 }
 
-interface ThumbsUpIconProps extends SVGProps<SVGSVGElement> {
-  size?: number;
-}
-
 export function ThumbsUpIcon({
   size = 24,
   className = '',
   ...props
-}: ThumbsUpIconProps) {
+}: CardIconProps) {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
