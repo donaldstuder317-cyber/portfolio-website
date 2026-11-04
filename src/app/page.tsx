@@ -1,4 +1,4 @@
-import ScrollFrameBackdrop from '@/components/background/scroll-frame-backdrop';
+import ScrollFrameBackdrop from '@/components/layout/scroll-frame-backdrop';
 import About from '@/components/sections/about';
 import Contact from '@/components/sections/contact';
 import Hero from '@/components/sections/hero';

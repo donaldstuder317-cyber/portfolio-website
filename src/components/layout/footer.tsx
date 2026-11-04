@@ -1,4 +1,9 @@
-import { CredlyIcon, DSIcon, GithubIcon, LinkedinIcon } from '@/assets/icons';
+import {
+  CredlyIcon,
+  DSIcon,
+  GithubIcon,
+  LinkedinIcon,
+} from '@/components/ui/icons';
 
 const Footer = () => {
   return (
