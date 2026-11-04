@@ -149,7 +149,7 @@ const projects = [
     description: 'Interactive UI with Responsive Shopping Cart',
     image: '/coffee-shop.png',
     url: 'https://the-bean-place-8-10-2026.vercel.app/',
-    accent: 'from-pink-500/30 via-violet-500/10 to-transparent',
+    accent: 'from-pacific-cyan/30 via-blue-slate/10 to-transparent',
   },
   {
     id: '02',
@@ -157,7 +157,7 @@ const projects = [
     description: 'Collaborative task management application',
     image: null,
     url: null,
-    accent: 'from-sky-500/30 via-cyan-500/10 to-transparent',
+    accent: 'from-blue-slate/40 via-pacific-cyan/10 to-transparent',
   },
   {
     id: '03',
@@ -165,7 +165,7 @@ const projects = [
     description: 'Real-time cryptocurrency tracking dashboard',
     image: null,
     url: null,
-    accent: 'from-emerald-500/30 via-cyan-500/10 to-transparent',
+    accent: 'from-iron-grey/50 via-pacific-cyan/20 to-transparent',
   },
 ];
 
@@ -363,7 +363,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className='relative min-h-screen bg-transparent text-[color:var(--alabaster-grey)]'>
+    <main className='text-alabaster-grey relative min-h-screen bg-transparent'>
       <div className='pointer-events-none fixed inset-0 z-0 flex items-center justify-center overflow-hidden'>
         <canvas
           ref={canvasRef}
@@ -374,7 +374,7 @@ export default function Home() {
 
       <div
         aria-hidden='true'
-        className='pointer-events-none fixed inset-0 z-[1] bg-[#030014]/30'
+        className='bg-backdrop/30 pointer-events-none fixed inset-0 z-[1]'
       />
 
       <div className='site-content text-readable relative z-10'>
@@ -382,7 +382,7 @@ export default function Home() {
           <div className='relative mx-auto -mt-8 max-w-6xl px-4 pb-16 md:px-8 xl:px-0'>
             <div className='grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]'>
               <div className='max-w-xl'>
-                <FlipText className='mb-5 text-xs font-semibold tracking-[0.22em] text-[#a78bfa] uppercase'>
+                <FlipText className='text-pacific-cyan mb-5 text-xs font-semibold tracking-[0.22em] uppercase'>
                   FULL STACK WEB DEVELOPER
                 </FlipText>
 
@@ -390,8 +390,8 @@ export default function Home() {
                   Donald Studer
                 </FlipText>
 
-                <div className='mt-3 max-w-md rounded-xl border border-[#dcdcdd]/25 bg-[#dcdcdd]/[0.12] p-4 backdrop-blur-[2px]'>
-                  <p className='text-base leading-7 text-[#c5c3c6]'>
+                <div className='border-alabaster-grey/25 bg-alabaster-grey/[0.12] mt-3 max-w-md rounded-xl border p-4 backdrop-blur-[2px]'>
+                  <p className='text-pale-slate text-base leading-7'>
                     Open to full-stack opportunities, freelance web development,
                     and team collaborations.
                   </p>
@@ -400,28 +400,28 @@ export default function Home() {
                 <div className='mt-8 flex flex-wrap gap-4'>
                   <a
                     href='#contact'
-                    className='rounded-lg border border-[#4c5c68] bg-[#1e293b] px-6 py-3 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:text-[#1985a1]'
+                    className='border-blue-slate bg-surface-raised hover:border-pacific-cyan hover:text-pacific-cyan rounded-lg border px-6 py-3 text-sm font-semibold text-white transition'
                   >
                     Get In Touch <span className='ml-2'>→</span>
                   </a>
                   <a
                     href='/Donald-Studer-Resume.pdf'
                     download='Donald-Studer-Resume.pdf'
-                    className='rounded-lg border border-[#1985a1]/60 bg-[#0f172a] px-6 py-3 text-sm font-semibold text-[#dcdcdd] transition hover:bg-[#1985a1] hover:text-white'
+                    className='border-pacific-cyan/60 bg-surface-base text-alabaster-grey hover:bg-pacific-cyan rounded-lg border px-6 py-3 text-sm font-semibold transition hover:text-white'
                   >
                     Download Resume <span className='ml-2'>↓</span>
                   </a>
                 </div>
 
                 <div className='mt-12'>
-                  <p className='mb-4 text-[0.68rem] font-semibold tracking-[0.18em] text-[#dcdcdd] uppercase'>
+                  <p className='text-alabaster-grey mb-4 text-[0.68rem] font-semibold tracking-[0.18em] uppercase'>
                     Technologies | Mastered
                   </p>
                   <div className='flex flex-wrap gap-3'>
                     {techIcons.map((tech) => (
                       <div
                         key={tech.name}
-                        className='flex h-11 w-11 items-center justify-center rounded-lg border border-[#4c5c68] bg-[#24343c]/85 shadow-none'
+                        className='border-blue-slate bg-surface-raised/85 flex h-11 w-11 items-center justify-center rounded-lg border shadow-none'
                         title={tech.name}
                       >
                         {tech.icon}
@@ -434,7 +434,7 @@ export default function Home() {
               <div className='relative flex min-h-[520px] items-center justify-center'>
                 <div className='portrait-glow pointer-events-none absolute' />
                 <div className='relative z-[1] flex items-center justify-center'>
-                  <div className='portrait-frame relative h-[280px] w-[280px] overflow-hidden rounded-full bg-[#0d1328]'>
+                  <div className='portrait-frame bg-surface-base relative h-[280px] w-[280px] overflow-hidden rounded-full'>
                     <Image
                       src={headshot}
                       alt='Alex headshot'
@@ -456,14 +456,14 @@ export default function Home() {
         >
           <div className='grid gap-12 lg:grid-cols-[1.1fr_0.9fr]'>
             <div>
-              <p className='mb-3 text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
+              <p className='text-pale-slate mb-3 text-xs font-semibold tracking-[0.28em] uppercase'>
                 About Me
               </p>
               <FlipText className='text-3xl font-black text-white sm:text-4xl'>
                 Battle-tested discipline meets clean, modern code
               </FlipText>
-              <div className='mt-5 max-w-lg rounded-xl border border-[#dcdcdd]/25 bg-[#dcdcdd]/[0.12] p-4 backdrop-blur-[2px]'>
-                <p className='text-base leading-7 text-[#c5c3c6]'>
+              <div className='border-alabaster-grey/25 bg-alabaster-grey/[0.12] mt-5 max-w-lg rounded-xl border p-4 backdrop-blur-[2px]'>
+                <p className='text-pale-slate text-base leading-7'>
                   Writing clean, reliable code requires more than knowing
                   syntax; it demands consistency, structure, and accountability.
                   Having operated under demanding conditions where precision and
@@ -472,7 +472,7 @@ export default function Home() {
                   standards, and rigorous testing before deployment.
                 </p>
               </div>
-              <button className='mt-8 rounded-lg border border-[#1985a1]/60 bg-transparent px-5 py-3 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:bg-[#1985a1]/10'>
+              <button className='border-pacific-cyan/60 hover:border-pacific-cyan hover:bg-pacific-cyan/10 mt-8 rounded-lg border bg-transparent px-5 py-3 text-sm font-semibold text-white transition'>
                 Learn More About Me <span className='ml-2'>→</span>
               </button>
             </div>
@@ -482,8 +482,8 @@ export default function Home() {
                 <FlipText className='text-xl font-bold text-white'>
                   U.S. Army Veteran &amp; Full-Stack Developer
                 </FlipText>
-                <div className='mt-5 rounded-xl border border-[#dcdcdd]/25 bg-[#dcdcdd]/[0.12] p-4 backdrop-blur-[2px]'>
-                  <p className='text-base leading-7 text-[#c5c3c6]'>
+                <div className='border-alabaster-grey/25 bg-alabaster-grey/[0.12] mt-5 rounded-xl border p-4 backdrop-blur-[2px]'>
+                  <p className='text-pale-slate text-base leading-7'>
                     Bridging military discipline, logistics problem-solving, and
                     modern software engineering. Currently pursuing an A.S. in
                     Computer Science while building responsive, accessible web
@@ -507,42 +507,42 @@ export default function Home() {
           </div>
 
           <div className='grid gap-6 md:grid-cols-3'>
-            <article className='group rounded-2xl border border-b-8 border-[#4c5c68] bg-[#1b252b]/85 p-4 shadow-none transition duration-300 ease-out hover:-translate-y-2 hover:border-[#1985a1] hover:shadow-[0_18px_40px_rgba(0,0,0,0.28)] motion-reduce:transition-none motion-reduce:hover:translate-y-0'>
-              <div className='mb-5 flex h-9 w-9 items-center justify-center rounded-full bg-[#2d3545] text-[#dcdcdd]'>
+            <article className='group border-blue-slate bg-surface-base/85 hover:border-pacific-cyan rounded-2xl border border-b-8 p-4 shadow-none transition duration-300 ease-out hover:-translate-y-2 hover:shadow-[0_18px_40px_rgba(0,0,0,0.28)] motion-reduce:transition-none motion-reduce:hover:translate-y-0'>
+              <div className='bg-surface-raised text-alabaster-grey mb-5 flex h-9 w-9 items-center justify-center rounded-full'>
                 <CheckmarkCircle size={36} />
               </div>
               <p className='text-4xl font-black text-white'>100%</p>
               <h3 className='mt-1 text-sm font-bold text-white'>
                 Clean Code Guarantee
               </h3>
-              <p className='mt-2 text-xs leading-5 text-[#7f8994]'>
+              <p className='text-pale-slate/70 mt-2 text-xs leading-5'>
                 Every function commented, all dependencies documented.
               </p>
             </article>
 
-            <article className='group rounded-2xl border border-b-8 border-[#4c5c68] bg-[#1b252b]/85 p-4 shadow-none transition duration-300 ease-out hover:-translate-y-2 hover:border-[#1985a1] hover:shadow-[0_18px_40px_rgba(0,0,0,0.28)] motion-reduce:transition-none motion-reduce:hover:translate-y-0'>
-              <div className='mb-5 flex h-9 w-9 items-center justify-center rounded-full bg-[#2d3545] text-[#dcdcdd]'>
+            <article className='group border-blue-slate bg-surface-base/85 hover:border-pacific-cyan rounded-2xl border border-b-8 p-4 shadow-none transition duration-300 ease-out hover:-translate-y-2 hover:shadow-[0_18px_40px_rgba(0,0,0,0.28)] motion-reduce:transition-none motion-reduce:hover:translate-y-0'>
+              <div className='bg-surface-raised text-alabaster-grey mb-5 flex h-9 w-9 items-center justify-center rounded-full'>
                 <RocketIcon size={36} />
               </div>
               <p className='text-4xl font-black text-white'>30</p>
               <h3 className='mt-1 text-sm font-bold text-white'>
                 Days to Deploy
               </h3>
-              <p className='mt-2 text-xs leading-5 text-[#7f8994]'>
+              <p className='text-pale-slate/70 mt-2 text-xs leading-5'>
                 Guaranteed delivery of a working, defined prototype within one
                 month.
               </p>
             </article>
 
-            <article className='group rounded-2xl border border-b-8 border-[#4c5c68] bg-[#1b252b]/85 p-4 shadow-none transition duration-300 ease-out hover:-translate-y-2 hover:border-[#1985a1] hover:shadow-[0_18px_40px_rgba(0,0,0,0.28)] motion-reduce:transition-none motion-reduce:hover:translate-y-0'>
-              <div className='mb-5 flex h-9 w-9 items-center justify-center rounded-full bg-[#2d3545] text-[#dcdcdd]'>
+            <article className='group border-blue-slate bg-surface-base/85 hover:border-pacific-cyan rounded-2xl border border-b-8 p-4 shadow-none transition duration-300 ease-out hover:-translate-y-2 hover:shadow-[0_18px_40px_rgba(0,0,0,0.28)] motion-reduce:transition-none motion-reduce:hover:translate-y-0'>
+              <div className='bg-surface-raised text-alabaster-grey mb-5 flex h-9 w-9 items-center justify-center rounded-full'>
                 <ThumbsUpIcon size={36} />
               </div>
               <p className='text-4xl font-black text-white'>10x</p>
               <h3 className='mt-1 text-sm font-bold text-white'>
                 SEO Best Practice
               </h3>
-              <p className='mt-2 text-xs leading-5 text-[#7f8994]'>
+              <p className='text-pale-slate/70 mt-2 text-xs leading-5'>
                 Implementation of 10-core SEO principles right from the first
                 commit.
               </p>
@@ -555,7 +555,7 @@ export default function Home() {
           className='mx-auto max-w-6xl scroll-mt-24 px-4 pb-20 md:px-8 xl:px-0'
         >
           <div className='mb-10 text-center'>
-            <p className='text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
+            <p className='text-pale-slate text-xs font-semibold tracking-[0.28em] uppercase'>
               Featured Projects
             </p>
             <FlipText className='mt-3 text-3xl font-black text-white sm:text-4xl'>
@@ -567,13 +567,13 @@ export default function Home() {
             {projects.map((project) => (
               <article
                 key={project.id}
-                className='group overflow-hidden rounded-2xl border border-[#4c5c68] bg-[#1b252b]/85 p-3 shadow-none transition duration-300 ease-out hover:-translate-y-2 hover:border-[#1985a1] hover:shadow-[0_18px_40px_rgba(0,0,0,0.28)] motion-reduce:transition-none motion-reduce:hover:translate-y-0'
+                className='group border-blue-slate bg-surface-base/85 hover:border-pacific-cyan overflow-hidden rounded-2xl border p-3 shadow-none transition duration-300 ease-out hover:-translate-y-2 hover:shadow-[0_18px_40px_rgba(0,0,0,0.28)] motion-reduce:transition-none motion-reduce:hover:translate-y-0'
               >
-                <div className='mb-4 rounded-xl border border-[#4c5c68] bg-[#24343c]/85 p-2'>
+                <div className='border-blue-slate bg-surface-raised/85 mb-4 rounded-xl border p-2'>
                   <div
                     className={`relative h-52 overflow-hidden rounded-lg bg-gradient-to-br ${project.accent} transition-transform duration-500 ease-out group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100`}
                   >
-                    <div className='absolute top-4 left-4 text-[10px] font-semibold tracking-[0.25em] text-[#dcdcdd] uppercase'>
+                    <div className='text-alabaster-grey absolute top-4 left-4 text-[10px] font-semibold tracking-[0.25em] uppercase'>
                       {project.id}
                     </div>
                     {project.image ? (
@@ -585,7 +585,7 @@ export default function Home() {
                         className='object-cover'
                       />
                     ) : (
-                      <div className='absolute inset-x-5 top-12 bottom-5 rounded-[18px] border border-[#4c5c68] bg-[#1b252b]/90 p-3'>
+                      <div className='border-blue-slate bg-surface-base/90 absolute inset-x-5 top-12 bottom-5 rounded-[18px] border p-3'>
                         <div className='mb-3 h-3 w-20 rounded bg-white/10' />
                         <div className='space-y-2'>
                           <div className='h-2.5 w-full rounded bg-white/10' />
@@ -605,7 +605,7 @@ export default function Home() {
                   <h3 className='text-xl font-bold text-white'>
                     {project.name}
                   </h3>
-                  <p className='mt-2 text-sm leading-6 text-[#c5c3c6]'>
+                  <p className='text-pale-slate mt-2 text-sm leading-6'>
                     {project.description}
                   </p>
                   {project.url ? (
@@ -613,12 +613,12 @@ export default function Home() {
                       href={project.url}
                       target='_blank'
                       rel='noreferrer'
-                      className='mt-5 inline-flex items-center gap-2 rounded-lg border border-[#1985a1]/60 bg-[#10192c] px-4 py-2 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:bg-[#1985a1]/10'
+                      className='border-pacific-cyan/60 bg-surface-base hover:border-pacific-cyan hover:bg-pacific-cyan/10 mt-5 inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold text-white transition'
                     >
                       View Project <span>→</span>
                     </a>
                   ) : (
-                    <button className='mt-5 inline-flex items-center gap-2 rounded-lg border border-[#1985a1]/60 bg-[#10192c] px-4 py-2 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:bg-[#1985a1]/10'>
+                    <button className='border-pacific-cyan/60 bg-surface-base hover:border-pacific-cyan hover:bg-pacific-cyan/10 mt-5 inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold text-white transition'>
                       View Project <span>→</span>
                     </button>
                   )}
@@ -629,10 +629,10 @@ export default function Home() {
         </section>
 
         <section className='mx-auto max-w-6xl px-4 pb-20 md:px-8 xl:px-0'>
-          <div className='grid gap-8 rounded-[28px] border border-[#4c5c68] bg-[#1b252b]/85 p-6 md:p-10 lg:grid-cols-[1fr_1.2fr]'>
+          <div className='border-blue-slate bg-surface-base/85 grid gap-8 rounded-[28px] border p-6 md:p-10 lg:grid-cols-[1fr_1.2fr]'>
             <div className='flex items-center'>
               <div>
-                <p className='text-xs font-semibold tracking-[0.28em] text-[#c5c3c6] uppercase'>
+                <p className='text-pale-slate text-xs font-semibold tracking-[0.28em] uppercase'>
                   Let&apos;s work together
                 </p>
                 <h2 className='mt-3 text-3xl font-black text-white sm:text-4xl'>
@@ -641,46 +641,46 @@ export default function Home() {
               </div>
             </div>
 
-            <div className='rounded-[24px] border border-[#4c5c68] bg-[#24343c]/85 p-6'>
+            <div className='border-blue-slate bg-surface-raised/85 rounded-[24px] border p-6'>
               <form className='space-y-4' onSubmit={handleContactSubmit}>
                 <div className='grid gap-4 sm:grid-cols-2'>
-                  <label className='space-y-2 text-sm font-medium text-[#dcdcdd]'>
+                  <label className='text-alabaster-grey space-y-2 text-sm font-medium'>
                     Name
                     <input
                       type='text'
                       name='name'
                       required
                       placeholder='Your name'
-                      className='w-full rounded-lg border border-[#4c5c68] bg-[#1b252b] px-4 py-3 text-sm text-white transition outline-none placeholder:text-[#c5c3c6]/60 focus:border-[#1985a1]'
+                      className='border-blue-slate bg-surface-base placeholder:text-pale-slate/60 focus:border-pacific-cyan w-full rounded-lg border px-4 py-3 text-sm text-white transition outline-none'
                     />
                   </label>
-                  <label className='space-y-2 text-sm font-medium text-[#dcdcdd]'>
+                  <label className='text-alabaster-grey space-y-2 text-sm font-medium'>
                     Email
                     <input
                       type='email'
                       name='email'
                       required
                       placeholder='you@example.com'
-                      className='w-full rounded-lg border border-[#4c5c68] bg-[#1b252b] px-4 py-3 text-sm text-white transition outline-none placeholder:text-[#c5c3c6]/60 focus:border-[#1985a1]'
+                      className='border-blue-slate bg-surface-base placeholder:text-pale-slate/60 focus:border-pacific-cyan w-full rounded-lg border px-4 py-3 text-sm text-white transition outline-none'
                     />
                   </label>
                 </div>
 
-                <label className='block space-y-2 text-sm font-medium text-[#dcdcdd]'>
+                <label className='text-alabaster-grey block space-y-2 text-sm font-medium'>
                   Tell me about your project
                   <textarea
                     name='message'
                     required
                     rows={4}
                     placeholder='What are you looking to build?'
-                    className='w-full resize-none rounded-lg border border-[#4c5c68] bg-[#1b252b] px-4 py-3 text-sm leading-6 text-white transition outline-none placeholder:text-[#c5c3c6]/60 focus:border-[#1985a1]'
+                    className='border-blue-slate bg-surface-base placeholder:text-pale-slate/60 focus:border-pacific-cyan w-full resize-none rounded-lg border px-4 py-3 text-sm leading-6 text-white transition outline-none'
                   />
                 </label>
 
                 <button
                   type='submit'
                   disabled={contactStatus === 'sending'}
-                  className='inline-flex rounded-lg border border-[#1985a1]/60 bg-[#1985a1]/10 px-5 py-3 text-sm font-semibold text-white transition hover:border-[#1985a1] hover:bg-[#1985a1]/20'
+                  className='border-pacific-cyan/60 bg-pacific-cyan/10 hover:border-pacific-cyan hover:bg-pacific-cyan/20 inline-flex rounded-lg border px-5 py-3 text-sm font-semibold text-white transition'
                 >
                   {contactStatus === 'sending' ? 'Sending...' : 'Send Message'}
                   <span className='ml-2'>→</span>
@@ -690,7 +690,7 @@ export default function Home() {
                   className={`text-sm ${
                     contactStatus === 'error'
                       ? 'text-red-300'
-                      : 'text-[#c5c3c6]'
+                      : 'text-pale-slate'
                   }`}
                 >
                   {contactStatus === 'success'

@@ -29,7 +29,7 @@ export default function ScrollToTop() {
   return (
     <button
       onClick={scrollToTop}
-      className='bg-purple fixed right-8 bottom-8 size-10 place-items-center rounded-sm text-white shadow-md transition-opacity duration-300 hover:opacity-70'
+      className='bg-pacific-cyan fixed right-8 bottom-8 size-10 place-items-center rounded-sm text-white shadow-md transition-opacity duration-300 hover:opacity-70'
       style={{
         display: isVisible ? 'grid' : 'none',
       }}

@@ -76,7 +76,7 @@ export function CredlyIcon(props: IconProps) {
       />
       <path
         d='M15.8 8.2a4.8 4.8 0 1 0 0 7.6'
-        stroke='#1b252b'
+        stroke='var(--color-surface-base)'
         strokeWidth='1.8'
         strokeLinecap='round'
       />
