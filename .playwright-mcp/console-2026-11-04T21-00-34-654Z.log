@@ -1,0 +1,7 @@
+[   26937ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/video/frames/frame_0028.jpg:0
+[   29795ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/video/frames/frame_0019.jpg:0
+[   29823ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/video/frames/frame_0018.jpg:0
+[   29868ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/video/frames/frame_0017.jpg:0
+[   39960ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/video/frames/frame_0016.jpg:0
+[   40056ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/video/frames/frame_0015.jpg:0
+[   40373ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/video/frames/frame_0014.jpg:0

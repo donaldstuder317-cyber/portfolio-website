@@ -61,13 +61,16 @@ export function FlipText({
   const totalChars = children.length;
   const wordOffsets = useMemo(() => {
     const separatorLength = separator.length;
-    let offset = 0;
 
-    return words.map((word) => {
-      const wordOffset = offset;
-      offset += word.length + separatorLength;
-      return wordOffset;
-    });
+    return words.reduce<number[]>((offsets, _word, index) => {
+      const previous = words[index - 1];
+      offsets.push(
+        index === 0
+          ? 0
+          : offsets[index - 1] + previous.length + separatorLength,
+      );
+      return offsets;
+    }, []);
   }, [separator.length, words]);
 
   useEffect(() => {

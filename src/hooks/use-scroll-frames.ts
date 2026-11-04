@@ -3,7 +3,11 @@
 import { useEffect, useRef, type RefObject } from 'react';
 
 type Options = {
-  /** Frame image paths, in playback order. */
+  /**
+   * Frame image paths, in playback order. Must be referentially stable
+   * (declare it at module scope) -- a new array identity restarts the
+   * sequence and rebuilds the image cache.
+   */
   frames: string[];
   /**
    * How far the rendered frame moves toward the scroll target each tick,
@@ -22,15 +26,11 @@ type Options = {
  * idle scrolling costs nothing. Returns the ref to attach to the canvas.
  */
 export function useScrollFrames({
-  frames: framePaths,
+  frames: paths,
   smoothing = 0.08,
   preloadRadius = 2,
 }: Options): RefObject<HTMLCanvasElement | null> {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  // Read inside the effect so a new array identity cannot restart it.
-  const pathsRef = useRef(framePaths);
-  pathsRef.current = framePaths;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -41,7 +41,6 @@ export function useScrollFrames({
 
     ctx.imageSmoothingEnabled = true;
 
-    const paths = pathsRef.current;
     const frameCount = paths.length;
     if (frameCount === 0) return;
 
@@ -200,7 +199,7 @@ export function useScrollFrames({
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.visualViewport?.removeEventListener('resize', resizeCanvas);
     };
-  }, [smoothing, preloadRadius]);
+  }, [paths, smoothing, preloadRadius]);
 
   return canvasRef;
 }
