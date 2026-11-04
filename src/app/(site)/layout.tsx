@@ -1,16 +1,12 @@
-import '@/styles/animate.css';
-import '@/styles/prism-vsc-dark-plus.css';
-import '@/styles/star.css';
 import '@/styles/tailwind.css';
+
+import type { Metadata } from 'next';
+import { Plus_Jakarta_Sans } from 'next/font/google';
+import NextTopLoader from 'nextjs-toploader';
 
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import ScrollToTop from '@/components/ScrollToTop';
-import { Plus_Jakarta_Sans } from 'next/font/google';
-import type { Metadata } from 'next';
-import NextTopLoader from 'nextjs-toploader';
-import AuthProvider from '../context/AuthContext';
-import ToasterContext from '../context/ToastContext';
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -18,6 +14,9 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  title: 'Donald Studer — Front-End Developer',
+  description:
+    'Portfolio of Donald Studer, a front-end developer building accessible, responsive web interfaces with React, Next.js, and TypeScript.',
   icons: {
     icon: '/favicon.png?v=2',
   },
@@ -33,19 +32,15 @@ export default function RootLayout({
       <body>
         <div className='isolate'>
           <NextTopLoader
-            color='#8646F4'
+            color='var(--color-pacific-cyan)'
             crawlSpeed={300}
             showSpinner={false}
             shadow='none'
           />
 
-          <AuthProvider>
-            <Header />
-            {children}
-            <Footer />
-
-            <ToasterContext />
-          </AuthProvider>
+          <Header />
+          {children}
+          <Footer />
         </div>
 
         <ScrollToTop />
