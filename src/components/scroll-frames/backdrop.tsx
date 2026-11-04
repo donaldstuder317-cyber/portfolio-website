@@ -1,6 +1,6 @@
 'use client';
 
-import { useScrollFrames } from '@/hooks/use-scroll-frames';
+import { useScrollFrames } from './use-scroll-frames';
 
 const FRAME_COUNT = 53;
 

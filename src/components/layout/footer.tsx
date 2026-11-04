@@ -1,9 +1,9 @@
+import { DSIcon } from '@/components/icons/brand';
 import {
   CredlyIcon,
-  DSIcon,
   GithubIcon,
   LinkedinIcon,
-} from '@/components/icons/brand';
+} from '@/components/icons/social';
 
 const Footer = () => {
   return (

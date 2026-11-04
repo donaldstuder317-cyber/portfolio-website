@@ -7,7 +7,7 @@ export type Project = {
   image: string | null;
   /** External link, or null while the project is unreleased. */
   url: string | null;
-  /** Tailwind gradient classes, drawn from the palette (see spec.md). */
+  /** Tailwind gradient classes, drawn from the palette (see docs/spec.md). */
   accent: string;
 };
 
@@ -16,7 +16,7 @@ export const projects: Project[] = [
     id: '01',
     name: 'Online Coffee Shop',
     description: 'Interactive UI with Responsive Shopping Cart',
-    image: '/coffee-shop.png',
+    image: '/images/coffee-shop.png',
     url: 'https://the-bean-place-8-10-2026.vercel.app/',
     accent: 'from-pacific-cyan/30 via-blue-slate/10 to-transparent',
   },

@@ -2,7 +2,7 @@
 
 ## Visual System
 
-Use the color palette in `spec.md` for all new site UI and for modifications to existing UI:
+Use the color palette in `docs/spec.md` for all new site UI and for modifications to existing UI:
 
 ```css
 --alabaster-grey: #dcdcdd;

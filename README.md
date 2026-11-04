@@ -41,12 +41,12 @@ src/
 │   ├── sitemap.ts
 │   └── api/contact/route.ts  Contact form handler
 ├── components/
-│   ├── layout/               Header, footer, scroll-to-top, canvas backdrop
+│   ├── icons/                SVG sets: brand, social, card, tech
+│   ├── layout/               Header, footer, scroll-to-top
+│   ├── scroll-frames/        Canvas backdrop + its animation hook
 │   ├── sections/             Hero, about, highlights, projects, contact
-│   └── ui/                   Reusable primitives
+│   └── ui/                   Reusable primitives (see its README)
 ├── data/                     Page content as typed modules
-├── hooks/
-│   └── use-scroll-frames.ts  The canvas animation
 ├── lib/
 └── styles/
     └── tailwind.css          Design tokens + the handful of custom utilities
@@ -96,7 +96,7 @@ an `aria-live` region.
 
 ### Design system
 
-Five tokens in `spec.md` are the single source of truth, declared once in
+Five tokens in `docs/spec.md` are the single source of truth, declared once in
 `tailwind.css` under `@theme` and consumed as Tailwind utilities:
 
 | Token                    | Hex       | Role                                 |
