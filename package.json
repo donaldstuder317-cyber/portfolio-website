@@ -1,6 +1,6 @@
 {
-  "name": "ai-tool-nextjs",
-  "version": "2.2.1",
+  "name": "portfolio-website",
+  "version": "1.0.0",
   "private": true,
   "engines": {
     "node": ">=20"
