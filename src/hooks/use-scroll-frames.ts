@@ -10,10 +10,18 @@ type Options = {
    */
   frames: string[];
   /**
-   * How far the rendered frame moves toward the scroll target each tick,
-   * between 0 and 1. Lower values trail the scroll more softly.
+   * Exponential smoothing time constant, in seconds: how long the rendered
+   * frame takes to close ~63% of the gap to the scroll target. Applied
+   * against elapsed time rather than per tick, so the feel is identical on
+   * 60Hz and 120Hz displays.
    */
-  smoothing?: number;
+  responseTime?: number;
+  /**
+   * A gap this large (in frames) is treated as a discontinuity -- an anchor
+   * jump or a hard flick -- and cuts straight to the target instead of
+   * easing across frames that were never fetched.
+   */
+  jumpThreshold?: number;
   /** Frames loaded on either side of the current one. */
   preloadRadius?: number;
 };
@@ -27,8 +35,9 @@ type Options = {
  */
 export function useScrollFrames({
   frames: paths,
-  smoothing = 0.08,
-  preloadRadius = 2,
+  responseTime = 0.08,
+  jumpThreshold = 8,
+  preloadRadius = 3,
 }: Options): RefObject<HTMLCanvasElement | null> {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -51,6 +60,7 @@ export function useScrollFrames({
     let targetIndex = 0;
     let currentIndex = 0;
     let renderedIndex = -1;
+    let lastFrameTime = 0;
     let disposed = false;
 
     const requestRender = () => {
@@ -85,16 +95,34 @@ export function useScrollFrames({
       }
     };
 
-    const renderFrame = (index: number, force = false) => {
+    const isReady = (index: number) => {
       const frame = frames[index];
-      if (
-        !frame ||
-        !frame.complete ||
-        !frame.naturalWidth ||
-        (!force && index === renderedIndex)
-      ) {
-        return;
+      return Boolean(frame?.complete && frame.naturalWidth);
+    };
+
+    /**
+     * The closest frame to `index` that has actually decoded. Without this a
+     * gap in the cache leaves the canvas showing whatever it drew last,
+     * which reads as a freeze followed by a pop.
+     */
+    const nearestReady = (index: number) => {
+      if (isReady(index)) return index;
+      for (let offset = 1; offset < frameCount; offset += 1) {
+        if (index - offset >= 0 && isReady(index - offset))
+          return index - offset;
+        if (index + offset < frameCount && isReady(index + offset)) {
+          return index + offset;
+        }
       }
+      return -1;
+    };
+
+    const renderFrame = (wanted: number, force = false) => {
+      const index = nearestReady(wanted);
+      if (index < 0) return;
+
+      const frame = frames[index];
+      if (!frame || (!force && index === renderedIndex)) return;
 
       const { width, height } = canvas;
       const frameRatio = frame.naturalWidth / frame.naturalHeight;
@@ -119,21 +147,39 @@ export function useScrollFrames({
       renderedIndex = index;
     };
 
-    function render() {
-      currentIndex += (targetIndex - currentIndex) * smoothing;
+    function render(now: number) {
+      // Elapsed-time easing, so 60Hz and 120Hz displays settle alike. The
+      // first tick has no previous timestamp, so assume one 60Hz frame.
+      const deltaSeconds = lastFrameTime
+        ? (now - lastFrameTime) / 1000
+        : 1 / 60;
+      lastFrameTime = now;
+
+      const gap = targetIndex - currentIndex;
+      if (Math.abs(gap) > jumpThreshold) {
+        currentIndex = targetIndex;
+      } else {
+        // Clamp dt so a backgrounded tab resuming cannot overshoot.
+        const alpha = 1 - Math.exp(-Math.min(deltaSeconds, 0.1) / responseTime);
+        currentIndex += gap * alpha;
+      }
+
       const roundedIndex = Math.min(
         frameCount - 1,
         Math.max(0, Math.round(currentIndex)),
       );
-
       renderFrame(roundedIndex);
+      preloadNearbyFrames(roundedIndex);
 
-      if (Math.abs(targetIndex - currentIndex) > 0.01) {
+      // Below half a frame the rounding no longer changes, so further ticks
+      // would be invisible work.
+      if (Math.abs(targetIndex - currentIndex) >= 0.5) {
         animationFrame = window.requestAnimationFrame(render);
       } else {
         currentIndex = targetIndex;
         renderFrame(Math.round(currentIndex));
         isRendering = false;
+        lastFrameTime = 0;
       }
     }
 
@@ -171,6 +217,8 @@ export function useScrollFrames({
       if (document.hidden) {
         window.cancelAnimationFrame(animationFrame);
         isRendering = false;
+        // Drop the stale timestamp so resuming does not see a huge delta.
+        lastFrameTime = 0;
         return;
       }
 
@@ -199,7 +247,7 @@ export function useScrollFrames({
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.visualViewport?.removeEventListener('resize', resizeCanvas);
     };
-  }, [paths, smoothing, preloadRadius]);
+  }, [paths, responseTime, jumpThreshold, preloadRadius]);
 
   return canvasRef;
 }
