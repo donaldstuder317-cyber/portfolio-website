@@ -3,7 +3,7 @@ import {
   DSIcon,
   GithubIcon,
   LinkedinIcon,
-} from '@/components/ui/icons';
+} from '@/components/icons/brand';
 
 const Footer = () => {
   return (

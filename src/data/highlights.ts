@@ -5,7 +5,7 @@ import {
   RocketIcon,
   ThumbsUpIcon,
   type CardIconProps,
-} from '@/components/ui/card-icons';
+} from '@/components/icons/card';
 
 export type Highlight = {
   Icon: ComponentType<CardIconProps>;

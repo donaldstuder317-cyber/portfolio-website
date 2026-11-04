@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { DSIcon } from '@/components/ui/icons';
+import { DSIcon } from '@/components/icons/brand';
 
 const navItems = [
   { title: 'Home', href: '/' },

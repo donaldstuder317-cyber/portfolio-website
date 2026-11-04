@@ -1,8 +1,8 @@
 import Image from 'next/image';
 
 import headshot from '@/assets/my-headshot.jpeg';
+import { techIcons } from '@/components/icons/tech';
 import { FlipText } from '@/components/ui/flip-text';
-import { techIcons } from '@/data/tech-icons';
 
 export default function Hero() {
   return (
